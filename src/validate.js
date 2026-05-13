@@ -93,7 +93,7 @@ function validateChange(changeDir, name) {
   }
 
   // Unexpected files
-  const expected = new Set(['product.md', 'research.md', 'technical.md', 'tasks.md', 'specs']);
+  const expected = new Set(['product.md', 'technical.md', 'tasks.md', 'specs']);
   const entries = readdirSync(changeDir);
   for (const entry of entries) {
     if (!expected.has(entry) && !entry.startsWith('.')) {

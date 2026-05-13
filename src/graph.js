@@ -15,7 +15,6 @@ const DEFAULT_SCHEMA = {
   id: 'spec-driven',
   artifacts: [
     { id: 'product',   file: 'product.md',   required: true,  deps: [],          command: '/smooth:product' },
-    { id: 'research',  file: 'research.md',  required: false, deps: ['product'], command: '/smooth:research' },
     { id: 'technical', file: 'technical.md', required: false, deps: ['product'], command: '/smooth:technical' },
     { id: 'tasks',     file: 'tasks.md',     required: true,  deps: ['product'], command: '/smooth:tasks' },
   ],

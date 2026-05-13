@@ -1,6 +1,6 @@
 ---
 name: "Smooth: Archive"
-description: "归档已完成的变更"
+description: "Archive completed changes"
 category: Workflow
 tags: [workflow, archive]
 ---

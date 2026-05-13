@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEMPLATES_DIR = join(__dirname, '..', 'templates');
 
-const COMMANDS = ['product', 'research', 'technical', 'tasks', 'apply', 'archive'];
+const COMMANDS = ['product', 'technical', 'tasks', 'apply', 'archive'];
 
 const TOOLS = {
   claude: {
@@ -142,7 +142,6 @@ export async function init(targetPath, toolIds) {
   console.log(`  smooth/specs/   — project-level specifications\n`);
   console.log('Getting started:');
   console.log('  /smooth:product "your idea"    — define what to build');
-  console.log('  /smooth:research               — investigate technical options');
   console.log('  /smooth:technical              — design the architecture');
   console.log('  /smooth:tasks                  — break into implementable tasks');
   console.log('  /smooth:apply                  — implement tasks');

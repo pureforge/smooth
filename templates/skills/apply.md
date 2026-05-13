@@ -1,6 +1,6 @@
 ---
 name: smooth-apply
-description: "按 tasks.md 逐步实施代码。Use when the user wants to start implementing, continue implementation, or work through tasks."
+description: "Implement code step by step from tasks.md. Use when the user wants to start implementing, continue implementation, or work through tasks."
 metadata:
   author: smooth
   version: "1.0"
@@ -25,7 +25,6 @@ Implement tasks from a change.
 
    Read every artifact in the change directory:
    - `product.md` — what we're building
-   - `research.md` — technical findings (if exists)
    - `technical.md` — how to build it (if exists)
    - `tasks.md` — what to implement
    - `specs/` — detailed specifications
@@ -59,7 +58,7 @@ Implement tasks from a change.
    Display:
    - Tasks completed this session
    - Overall progress: "N/M tasks complete"
-   - If all done: suggest archive
+   - If all done: verify against Acceptance Criteria from `product.md` and Technical Acceptance Criteria from `technical.md`, then suggest archive
    - If paused: explain why and wait for guidance
 
 **Output During Implementation**

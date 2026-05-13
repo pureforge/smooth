@@ -1,6 +1,6 @@
 ---
 name: smooth-archive
-description: "归档已完成的变更。Use when the user wants to finalize and archive a change after implementation is complete."
+description: "Archive completed changes. Use when the user wants to finalize and archive a change after implementation is complete."
 metadata:
   author: smooth
   version: "1.0"

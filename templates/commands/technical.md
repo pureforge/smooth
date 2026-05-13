@@ -1,6 +1,6 @@
 ---
 name: "Smooth: Technical"
-description: "边讨论边出技术设计 (technical.md)"
+description: "Discuss and create technical design (technical.md)"
 category: Workflow
 tags: [workflow, technical, design]
 ---
@@ -30,35 +30,40 @@ Enter technical design mode. Design the implementation with the user. Capture de
 
 ## What You Do
 
-1. **Load context**
+1. **Resolve Discussion Points from product.md**
 
-   Read existing artifacts for the change:
-   - `product.md` — understand what we're building
-   - `research.md` — understand technical constraints and decisions (if exists)
-   - `specs/` — understand existing specifications
+   Read `product.md` and `specs/` for the change. If `product.md` doesn't exist, suggest running `/smooth:product` first.
 
-   If `product.md` doesn't exist, suggest running `/smooth:product` first.
+   Check if `product.md` has a **Discussion Points** section. If it does:
+   - Read relevant code to investigate each point (feasibility, cost, existing patterns)
+   - Discuss findings with the user
+   - Once a point is resolved, update `product.md`: remove the point from Discussion Points and incorporate the decision into the appropriate section (Goals, Scope, etc.), including the reason why this approach was chosen
+   - Repeat until all discussion points are resolved
+
+   This step ensures the product requirements are finalized before designing the architecture. The final `product.md` should have no remaining discussion points.
+
+   If there are no Discussion Points, skip directly to step 2.
 
 2. **Design and write technical.md**
 
-   Explore the technical design with the user. As you design, continuously update `smooth/changes/<name>/technical.md`.
+   Based on the finalized `product.md`, explore the technical design with the user. Continuously update `smooth/changes/<name>/technical.md`.
 
    technical.md should evolve to include:
-   - **架构总览** — System diagram (ASCII art)
-   - **新增/修改模块** — File plan, what goes where
-   - **接口设计** — TypeScript types, function signatures
-   - **核心逻辑** — Key algorithms, state management, data flow
-   - **接入点** — Which existing files need changes
-   - **设计决策** — What was chosen and why (Q&A format)
-   - **性能考量** — If relevant
-   - **与现有代码的关系** — Reuse what, create what, don't touch what
+   - **Architecture Overview** — System diagram (ASCII art)
+   - **New/Modified Modules** — File plan, what goes where
+   - **Interface Design** — TypeScript types, function signatures
+   - **Core Logic** — Key algorithms, state management, data flow
+   - **Integration Points** — Which existing files need changes
+   - **Design Decisions** — What was chosen and why (Q&A format)
+   - **Performance Considerations** — If relevant
+   - **Relationship to Existing Code** — Reuse what, create what, don't touch what
+   - **Technical Acceptance Criteria** — What to verify from a technical perspective (e.g., performance thresholds, error handling, edge cases, backward compatibility)
 
    Don't wait until the end to write — update after each meaningful design decision.
 
 3. **Update specs/ and previous documents**
 
    - Design reveals requirement issues → update product.md
-   - Design reveals research gaps → update research.md
    - Design produces interface specifications → update specs/
 
 ---
@@ -102,17 +107,17 @@ Enter technical design mode. Design the implementation with the user. Capture de
 
 | Decision Type | Where to Capture |
 |---|---|
-| Architecture choice | `technical.md` 架构总览 |
-| Module boundaries | `technical.md` 新增/修改模块 |
-| API/interface design | `technical.md` 接口设计 + `specs/` |
-| Implementation approach | `technical.md` 核心逻辑 |
-| What to reuse vs create | `technical.md` 与现有代码的关系 |
+| Architecture choice | `technical.md` Architecture Overview |
+| Module boundaries | `technical.md` New/Modified Modules |
+| API/interface design | `technical.md` Interface Design + `specs/` |
+| Implementation approach | `technical.md` Core Logic |
+| What to reuse vs create | `technical.md` Relationship to Existing Code |
 | Requirement change | `product.md` (update) |
 
 ### Offer to move forward
 
 When the design is clear enough to break into tasks, offer:
-- "技术方案差不多了，要拆任务吗？（`/smooth:tasks`）"
+- "Technical design looks solid. Ready to break it into tasks? (`/smooth:tasks`)"
 - Or keep refining — no pressure to move on
 
 ---
@@ -125,4 +130,4 @@ When the design is clear enough to break into tasks, offer:
 - **Do write as you go** - Update documents after each meaningful decision
 - **Do read code** - Every design claim should be grounded in actual codebase state
 - **Do define interfaces** - TypeScript types are the contract between design and implementation
-- **Can modify previous artifacts** - If product.md, research.md, or specs/ need updating, update them
+- **Can modify previous artifacts** - If product.md or specs/ need updating, update them

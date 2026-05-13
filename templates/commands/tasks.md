@@ -1,6 +1,6 @@
 ---
 name: "Smooth: Tasks"
-description: "边讨论边拆任务清单 (tasks.md)"
+description: "Discuss and break down task list (tasks.md)"
 category: Workflow
 tags: [workflow, tasks, planning]
 ---
@@ -33,7 +33,6 @@ Enter task planning mode. Break down the implementation into concrete tasks with
 
    Read existing artifacts for the change:
    - `product.md` — understand what we're building
-   - `research.md` — understand technical constraints (if exists)
    - `technical.md` — understand the design (if exists)
    - `specs/` — understand specifications
 
@@ -84,7 +83,7 @@ Enter task planning mode. Break down the implementation into concrete tasks with
 ### Offer to move forward
 
 When the task list is complete and ordered, offer:
-- "任务拆完了，要开始实施吗？（`/smooth:apply`）"
+- "Tasks are ready. Want to start implementing? (`/smooth:apply`)"
 - Or keep refining — adjust scope, reorder, split/merge tasks
 
 ---
@@ -97,4 +96,4 @@ When the task list is complete and ordered, offer:
 - **Do write as you go** - Update tasks.md as tasks are identified
 - **Do respect order** - Tasks should be in dependency order
 - **Do reference design** - Tasks should map to modules/interfaces defined in technical.md
-- **Can modify previous artifacts** - If product.md, research.md, technical.md, or specs/ need updating, update them
+- **Can modify previous artifacts** - If product.md, technical.md, or specs/ need updating, update them

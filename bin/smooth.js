@@ -80,11 +80,10 @@ Options:
                    Default: claude
 
 After init, use slash commands in your AI assistant:
-  /smooth:product     边讨论边写需求文档
-  /smooth:research    边讨论边做技术调研
-  /smooth:technical   边讨论边出技术设计
-  /smooth:tasks       边讨论边拆任务清单
-  /smooth:apply       按 tasks.md 逐步实施代码
-  /smooth:archive     归档已完成的变更
+  /smooth:product     Discuss and write product requirements
+  /smooth:technical   Discuss and create technical design
+  /smooth:tasks       Discuss and break down task list
+  /smooth:apply       Implement code step by step from tasks.md
+  /smooth:archive     Archive completed changes
 `);
 }

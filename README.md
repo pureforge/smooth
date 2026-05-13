@@ -15,13 +15,12 @@ Spec-driven development workflow for AI coding assistants. Think before you code
 You: /smooth:product add-dark-mode
 AI:  Let's think about what dark mode means for this project...
      [discussion happens, product.md gets written incrementally]
-
-You: /smooth:research
-AI:  Let me investigate how the current theme system works...
-     [reads code, documents findings in research.md]
+     [open questions listed for technical validation]
 
 You: /smooth:technical
-AI:  Based on what we found, here's the architecture...
+AI:  Let me resolve the open questions first...
+     [reads code, validates feasibility, updates product.md]
+     Now let's design the architecture...
      [designs solution, writes technical.md with diagrams]
 
 You: /smooth:tasks
@@ -42,35 +41,30 @@ AI:  Archived to smooth/changes/archive/2025-01-23-add-dark-mode/
 ## Quick Start
 
 ```bash
-npm install -g @aspect-build/smooth
-
-cd your-project
-smooth init
+npx @pureforge/smooth init
 ```
 
 Now use these slash commands in Claude Code:
 
 | Command | Purpose |
 |---------|---------|
-| `/smooth:product` | 边讨论边写需求文档 |
-| `/smooth:research` | 边讨论边做技术调研 |
-| `/smooth:technical` | 边讨论边出技术设计 |
-| `/smooth:tasks` | 边讨论边拆任务清单 |
-| `/smooth:apply` | 按 tasks.md 逐步实施代码 |
-| `/smooth:archive` | 归档已完成的变更 |
+| `/smooth:product` | Define product requirements (PM perspective) |
+| `/smooth:technical` | Resolve open questions, then design architecture |
+| `/smooth:tasks` | Break down into implementable task list |
+| `/smooth:apply` | Implement code step by step from tasks.md |
+| `/smooth:archive` | Archive completed changes |
 
 ## Philosophy
 
 Each phase is a **stance with a deliverable** — you're having a conversation with your AI assistant while it simultaneously captures decisions into structured documents.
 
-- **Product** → Define what to build (product.md + specs/)
-- **Research** → Investigate how to build it (research.md)
-- **Technical** → Design the architecture (technical.md)
+- **Product** → Define what to build, list open questions (product.md + specs/)
+- **Technical** → Resolve open questions via code investigation, then design architecture (technical.md)
 - **Tasks** → Break into implementable chunks (tasks.md)
 - **Apply** → Implement task by task
 - **Archive** → Finalize and archive
 
-You don't have to follow the phases linearly. Skip research if the path is obvious. Jump back to product if implementation reveals new requirements. The workflow is **fluid**.
+You don't have to follow the phases linearly. Jump back to product if implementation reveals new requirements. The workflow is **fluid**.
 
 ## Project Structure
 
@@ -81,14 +75,12 @@ your-project/
 ├── .claude/
 │   ├── commands/smooth/     # Slash commands
 │   │   ├── product.md
-│   │   ├── research.md
 │   │   ├── technical.md
 │   │   ├── tasks.md
 │   │   ├── apply.md
 │   │   └── archive.md
 │   └── skills/              # Agent skills
 │       ├── smooth-product/SKILL.md
-│       ├── smooth-research/SKILL.md
 │       ├── smooth-technical/SKILL.md
 │       ├── smooth-tasks/SKILL.md
 │       ├── smooth-apply/SKILL.md
