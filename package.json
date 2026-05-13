@@ -1,0 +1,30 @@
+{
+  "name": "@pureforge/smooth",
+  "version": "0.0.1",
+  "description": "Smooth — spec-driven development workflow for AI coding assistants",
+  "keywords": [
+    "smooth",
+    "specs",
+    "cli",
+    "ai",
+    "workflow",
+    "development"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "smooth": "./bin/smooth.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "templates"
+  ],
+  "scripts": {
+    "lint": "eslint src/",
+    "test": "node --test src/**/*.test.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
