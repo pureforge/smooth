@@ -58,6 +58,7 @@ Now use these slash commands in your AI coding assistant:
 | `/smooth:technical` | Resolve open questions, then design architecture |
 | `/smooth:tasks` | Break down into implementable task list |
 | `/smooth:apply` | Implement code step by step from tasks.md |
+| `/smooth:verify` | Verify implementation against acceptance criteria |
 | `/smooth:archive` | Archive completed changes |
 
 ## Philosophy
@@ -68,9 +69,10 @@ Each phase is a **stance with a deliverable** — you're having a conversation w
 - **Technical** → Resolve open questions via code investigation, then design architecture (technical.md)
 - **Tasks** → Break into implementable chunks (tasks.md)
 - **Apply** → Implement task by task
+- **Verify** → Validate against acceptance criteria (verify.md)
 - **Archive** → Finalize and archive
 
-You don't have to follow the phases linearly. Jump back to product if implementation reveals new requirements. The workflow is **fluid**.
+You don't have to follow the phases linearly. The AI suggests the next step based on change complexity — simple changes can skip technical design, internal refactors can skip verification. The workflow is **fluid**.
 
 ## Project Structure
 
@@ -84,18 +86,21 @@ your-project/
 │   │   ├── technical.md
 │   │   ├── tasks.md
 │   │   ├── apply.md
+│   │   ├── verify.md
 │   │   └── archive.md
 │   └── skills/              # Agent skills
 │       ├── smooth-product/SKILL.md
 │       ├── smooth-technical/SKILL.md
 │       ├── smooth-tasks/SKILL.md
 │       ├── smooth-apply/SKILL.md
+│       ├── smooth-verify/SKILL.md
 │       └── smooth-archive/SKILL.md
 └── smooth/                  # Change artifacts live here
     ├── <change-name>/
     │   ├── product.md
     │   ├── technical.md
-    │   └── tasks.md
+    │   ├── tasks.md
+    │   └── verify.md
     └── archive/             # Completed changes
 ```
 

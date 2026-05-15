@@ -56,7 +56,9 @@ Implement tasks from a change.
    Display:
    - Tasks completed this session
    - Overall progress: "N/M tasks complete"
-   - If all done: verify against Acceptance Criteria from `product.md` and Technical Acceptance Criteria from `technical.md`, then suggest archive
+   - If all done: assess whether verification is needed and suggest next step:
+     - **Needs verification** (UI changes, user-facing behavior, multi-module integration, complex logic) → "Implementation complete. This change has user-facing behavior worth verifying. (`/smooth:verify`)"
+     - **Can skip verification** (pure refactor, internal logic with good test coverage, config changes) → "Implementation complete. This is a clean internal change. Ready to archive? (`/smooth:archive`)"
    - If paused: explain why and wait for guidance
 
 **Output During Implementation**

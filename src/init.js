@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEMPLATES_DIR = join(__dirname, '..', 'templates');
 
-const COMMANDS = ['product', 'technical', 'tasks', 'apply', 'archive'];
+const COMMANDS = ['product', 'technical', 'tasks', 'apply', 'verify', 'archive'];
 
 const TOOLS = {
   claude: {

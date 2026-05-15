@@ -81,9 +81,13 @@ If artifacts exist, read them and continue the conversation from that context.
 
 ### Offer to move forward
 
-When requirements feel solid, offer:
-- "Requirements are fairly clear now. Ready to move to technical design? (`/smooth:technical`)"
-- Or keep exploring — no pressure to move on
+When requirements feel solid, assess the change complexity and suggest the next step:
+
+- **Simple change** (single file, small scope, clear implementation path) → suggest skipping technical design: "This is straightforward enough to implement directly. Ready to start? (`/smooth:apply`)"
+- **Moderate change** (multiple files, some design decisions needed) → suggest technical design: "There are some design decisions to make. Want to think through the architecture? (`/smooth:technical`)"
+- **Complex change** (cross-module, architectural impact, multiple unknowns) → suggest full flow: "This touches several systems. Let's design the approach first. (`/smooth:technical`)"
+
+Or keep exploring — no pressure to move on.
 
 ---
 
