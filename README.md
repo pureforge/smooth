@@ -1,13 +1,19 @@
 # Smooth
 
-Spec-driven development workflow for AI coding assistants. Think before you code, implement with confidence.
+A workflow specification for AI coding assistants. Define how AI should approach development — from requirements to implementation — through structured phases and clear deliverables.
 
 ```text
-→ fluid not rigid
+→ workflow not tooling
 → iterative not waterfall
 → discuss then implement
 → built for brownfield not just greenfield
 ```
+
+## What is this
+
+Smooth is a **workflow standard**, not a framework. It defines a set of phases (product → technical → tasks → apply → archive) that guide AI assistants through structured development. Each phase has a clear stance, deliverable, and set of guardrails.
+
+After initialization, your AI assistant gets slash commands that enforce this workflow. No runtime dependencies, no CLI needed after init — just markdown templates that shape how AI thinks and works.
 
 ## See it in action
 
@@ -35,7 +41,7 @@ AI:  Implementing task 1/5: Add theme context provider...
      ...
 
 You: /smooth:archive
-AI:  Archived to smooth/changes/archive/2025-01-23-add-dark-mode/
+AI:  Archived to smooth/archive/2025-01-23-add-dark-mode/
 ```
 
 ## Quick Start
@@ -44,7 +50,7 @@ AI:  Archived to smooth/changes/archive/2025-01-23-add-dark-mode/
 npx @pureforge/smooth init
 ```
 
-Now use these slash commands in Claude Code:
+Now use these slash commands in your AI coding assistant:
 
 | Command | Purpose |
 |---------|---------|
@@ -58,7 +64,7 @@ Now use these slash commands in Claude Code:
 
 Each phase is a **stance with a deliverable** — you're having a conversation with your AI assistant while it simultaneously captures decisions into structured documents.
 
-- **Product** → Define what to build, list open questions (product.md + specs/)
+- **Product** → Define what to build, list open questions (product.md)
 - **Technical** → Resolve open questions via code investigation, then design architecture (technical.md)
 - **Tasks** → Break into implementable chunks (tasks.md)
 - **Apply** → Implement task by task
@@ -85,16 +91,19 @@ your-project/
 │       ├── smooth-tasks/SKILL.md
 │       ├── smooth-apply/SKILL.md
 │       └── smooth-archive/SKILL.md
-└── smooth/
-    └── changes/             # Change artifacts live here
-        └── archive/         # Completed changes
+└── smooth/                  # Change artifacts live here
+    ├── <change-name>/
+    │   ├── product.md
+    │   ├── technical.md
+    │   └── tasks.md
+    └── archive/             # Completed changes
 ```
 
 ## How it compares
 
-**vs. OpenSpec** — OpenSpec requires a CLI for every operation (`openspec new change`, `openspec status --json`). Smooth is zero-runtime — the AI reads markdown directly. No CLI needed after init.
+**vs. Kiro specs** — Kiro couples specs to its IDE. Smooth is tool-agnostic — works with any AI assistant that supports slash commands or skills.
 
-**vs. nothing** — AI coding without specs means vague prompts and unpredictable results. Smooth brings structure without ceremony.
+**vs. nothing** — AI coding without workflow structure means vague prompts and unpredictable results. Smooth brings process without ceremony.
 
 ## License
 

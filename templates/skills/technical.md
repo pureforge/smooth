@@ -8,7 +8,7 @@ metadata:
 
 Enter technical design mode. Design the implementation with the user. Capture decisions into technical.md as you go.
 
-**IMPORTANT: Technical mode is for designing and documenting architecture, not implementing.** You may read files, search code, and investigate the codebase, but you must NEVER write application code. You MUST create and iteratively update `technical.md` and `specs/` as design decisions are made — that's capturing design, not implementing.
+**IMPORTANT: Technical mode is for designing and documenting architecture, not implementing.** You may read files, search code, and investigate the codebase, but you must NEVER write application code. You MUST create and iteratively update `technical.md` as design decisions are made — that's capturing design, not implementing.
 
 **This is a stance with a deliverable.** You're a design partner helping the user figure out HOW to build it, while simultaneously documenting the architecture.
 
@@ -33,7 +33,7 @@ Enter technical design mode. Design the implementation with the user. Capture de
 
 1. **Resolve Discussion Points from product.md**
 
-   Read `product.md` and `specs/` for the change. If `product.md` doesn't exist, suggest running `/smooth:product` first.
+   Read `product.md` for the change. If `product.md` doesn't exist, suggest running `/smooth:product` first.
 
    Check if `product.md` has a **Discussion Points** section. If it does:
    - Read relevant code to investigate each point (feasibility, cost, existing patterns)
@@ -47,7 +47,7 @@ Enter technical design mode. Design the implementation with the user. Capture de
 
 2. **Design and write technical.md**
 
-   Based on the finalized `product.md`, explore the technical design with the user. Continuously update `smooth/changes/<name>/technical.md`.
+   Based on the finalized `product.md`, explore the technical design with the user. Continuously update `smooth/<name>/technical.md`.
 
    technical.md should evolve to include:
    - **Architecture Overview** — System diagram (ASCII art)
@@ -62,10 +62,9 @@ Enter technical design mode. Design the implementation with the user. Capture de
 
    Don't wait until the end to write — update after each meaningful design decision.
 
-3. **Update specs/ and previous documents**
+3. **Update previous documents**
 
    - Design reveals requirement issues → update product.md
-   - Design produces interface specifications → update specs/
 
 ---
 
@@ -110,7 +109,7 @@ Enter technical design mode. Design the implementation with the user. Capture de
 |---|---|
 | Architecture choice | `technical.md` Architecture Overview |
 | Module boundaries | `technical.md` New/Modified Modules |
-| API/interface design | `technical.md` Interface Design + `specs/` |
+| API/interface design | `technical.md` Interface Design |
 | Implementation approach | `technical.md` Core Logic |
 | What to reuse vs create | `technical.md` Relationship to Existing Code |
 | Requirement change | `product.md` (update) |
@@ -125,10 +124,10 @@ When the design is clear enough to break into tasks, offer:
 
 ## Guardrails
 
-- **Don't implement** - Never write application code. Creating/updating technical.md and specs/ is fine.
+- **Don't implement** - Never write application code. Creating/updating technical.md is fine.
 - **Don't dump** - Don't output a complete design doc at once. Discuss, design, write incrementally.
 - **Don't over-design** - Design for the actual problem, match existing project patterns
 - **Do write as you go** - Update documents after each meaningful decision
 - **Do read code** - Every design claim should be grounded in actual codebase state
 - **Do define interfaces** - TypeScript types are the contract between design and implementation
-- **Can modify previous artifacts** - If product.md or specs/ need updating, update them
+- **Can modify previous artifacts** - If product.md needs updating, update it

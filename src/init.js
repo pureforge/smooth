@@ -100,8 +100,7 @@ export async function init(targetPath, toolIds) {
 
   console.log('smooth init — setting up spec-driven workflow\n');
 
-  mkdirSync(join(targetPath, 'smooth', 'changes'), { recursive: true });
-  mkdirSync(join(targetPath, 'smooth', 'specs'), { recursive: true });
+  mkdirSync(join(targetPath, 'smooth'), { recursive: true });
 
   for (const toolId of toolIds) {
     const tool = TOOLS[toolId];
@@ -138,8 +137,7 @@ export async function init(targetPath, toolIds) {
     console.log(`  ✓ ${tool.name}: ${parts.join(' + ')}`);
   }
 
-  console.log(`\n  smooth/changes/ — change artifacts`);
-  console.log(`  smooth/specs/   — project-level specifications\n`);
+  console.log(`\n  smooth/ — change artifacts\n`);
   console.log('Getting started:');
   console.log('  /smooth:product "your idea"    — define what to build');
   console.log('  /smooth:technical              — design the architecture');

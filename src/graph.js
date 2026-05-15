@@ -6,7 +6,7 @@ import { join } from 'path';
  *
  * Each node has:
  *   id         — artifact identifier
- *   file       — filename inside smooth/changes/<name>/
+ *   file       — filename inside smooth/<name>/
  *   required   — must exist before apply
  *   deps       — which artifacts must be "done" before this one is "ready"
  *   command    — the slash command that produces this artifact

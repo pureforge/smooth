@@ -1,7 +1,7 @@
 {
   "name": "@pureforge/smooth",
-  "version": "0.0.2",
-  "description": "Smooth — spec-driven development workflow for AI coding assistants",
+  "version": "0.0.3",
+  "description": "Smooth — workflow specification for AI coding assistants",
   "keywords": [
     "smooth",
     "specs",

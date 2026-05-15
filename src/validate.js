@@ -3,15 +3,15 @@ import { join } from 'path';
 import { resolveGraph } from './graph.js';
 
 export function validate(targetPath, changeName) {
-  const changesDir = join(targetPath, 'smooth', 'changes');
+  const smoothDir = join(targetPath, 'smooth');
 
-  if (!existsSync(changesDir)) {
+  if (!existsSync(smoothDir)) {
     console.log('smooth: not initialized. Run `smooth init` first.');
     return;
   }
 
-  const active = readdirSync(changesDir).filter((name) => {
-    return name !== 'archive' && statSync(join(changesDir, name)).isDirectory();
+  const active = readdirSync(smoothDir).filter((name) => {
+    return name !== 'archive' && statSync(join(smoothDir, name)).isDirectory();
   });
 
   const targets = changeName ? [changeName] : active;
@@ -24,7 +24,7 @@ export function validate(targetPath, changeName) {
   let allValid = true;
 
   for (const name of targets) {
-    const changeDir = join(changesDir, name);
+    const changeDir = join(smoothDir, name);
     if (!existsSync(changeDir)) {
       console.log(`  ✗ ${name} — not found`);
       allValid = false;
@@ -93,7 +93,7 @@ function validateChange(changeDir, name) {
   }
 
   // Unexpected files
-  const expected = new Set(['product.md', 'technical.md', 'tasks.md', 'specs']);
+  const expected = new Set(['product.md', 'technical.md', 'tasks.md']);
   const entries = readdirSync(changeDir);
   for (const entry of entries) {
     if (!expected.has(entry) && !entry.startsWith('.')) {

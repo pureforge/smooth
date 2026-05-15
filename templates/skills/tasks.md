@@ -35,13 +35,12 @@ Enter task planning mode. Break down the implementation into concrete tasks with
    Read existing artifacts for the change:
    - `product.md` — understand what we're building
    - `technical.md` — understand the design (if exists)
-   - `specs/` — understand specifications
 
    If `product.md` doesn't exist, suggest running `/smooth:product` first.
 
 2. **Break down and write tasks.md**
 
-   Discuss task breakdown with the user. As tasks are identified, continuously update `smooth/changes/<name>/tasks.md`.
+   Discuss task breakdown with the user. As tasks are identified, continuously update `smooth/<name>/tasks.md`.
 
    tasks.md format:
    ```markdown
@@ -63,11 +62,10 @@ Enter task planning mode. Break down the implementation into concrete tasks with
    - **Ordered** — Dependencies respected
    - **Right-sized** — Not too big (multi-day), not too small (rename a variable)
 
-3. **Update specs/ and previous documents**
+3. **Update previous documents**
 
    - Task breakdown reveals missing requirements → update product.md
    - Task breakdown reveals design gaps → update technical.md
-   - Task breakdown produces new specifications → update specs/
 
 ---
 
@@ -97,4 +95,4 @@ When the task list is complete and ordered, offer:
 - **Do write as you go** - Update tasks.md as tasks are identified
 - **Do respect order** - Tasks should be in dependency order
 - **Do reference design** - Tasks should map to modules/interfaces defined in technical.md
-- **Can modify previous artifacts** - If product.md, technical.md, or specs/ need updating, update them
+- **Can modify previous artifacts** - If product.md or technical.md need updating, update them

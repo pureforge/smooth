@@ -27,9 +27,8 @@ Implement tasks from a change.
    - `product.md` — what we're building
    - `technical.md` — how to build it (if exists)
    - `tasks.md` — what to implement
-   - `specs/` — detailed specifications
 
-   **IMPORTANT**: Read ALL available artifacts before starting. The design decisions and specifications are your implementation guide.
+   **IMPORTANT**: Read ALL available artifacts before starting. The design decisions are your implementation guide.
 
 3. **Show current progress**
 

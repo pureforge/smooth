@@ -19,7 +19,7 @@ Archive a completed change.
    - Auto-select if only one active change exists
    - If ambiguous, list available changes:
      ```bash
-     ls smooth/changes/ | grep -v archive
+     ls smooth/ | grep -v archive
      ```
      Use **AskUserQuestion** to let the user select.
 
@@ -32,31 +32,20 @@ Archive a completed change.
    - Ask user for confirmation to continue
    - Proceed if user confirms
 
-3. **Sync specs (if applicable)**
-
-   Check for specs at `smooth/changes/<name>/specs/`.
-
-   **If specs exist:**
-   - Check if main specs directory exists: `smooth/specs/`
-   - If it does, compare delta specs with main specs
-   - Ask user: "Sync specs to main? (recommended)" or "Archive without syncing"
-   - If sync chosen: copy/merge specs to `smooth/specs/`
-
-4. **Perform the archive**
+3. **Perform the archive**
 
    ```bash
-   mkdir -p smooth/changes/archive
-   mv smooth/changes/<name> smooth/changes/archive/$(date +%Y-%m-%d)-<name>
+   mkdir -p smooth/archive
+   mv smooth/<name> smooth/archive/$(date +%Y-%m-%d)-<name>
    ```
 
-5. **Display summary**
+4. **Display summary**
 
    ```
    ## Archive Complete
 
    **Change:** <change-name>
-   **Archived to:** smooth/changes/archive/YYYY-MM-DD-<name>/
-   **Specs:** ✓ Synced / Skipped / No specs
+   **Archived to:** smooth/archive/YYYY-MM-DD-<name>/
 
    Tasks: X/Y complete
    ```

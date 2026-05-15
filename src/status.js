@@ -3,7 +3,7 @@ import { join } from 'path';
 import { resolveGraph, isReadyForApply, getTaskProgress, formatStatus } from './graph.js';
 
 export function status(targetPath, changeName) {
-  const changesDir = join(targetPath, 'smooth', 'changes');
+  const changesDir = join(targetPath, 'smooth');
 
   if (!existsSync(changesDir)) {
     console.log('smooth: not initialized. Run `smooth init` first.');
@@ -40,7 +40,7 @@ export function status(targetPath, changeName) {
 }
 
 export function list(targetPath) {
-  const changesDir = join(targetPath, 'smooth', 'changes');
+  const changesDir = join(targetPath, 'smooth');
 
   if (!existsSync(changesDir)) {
     console.log('smooth: not initialized. Run `smooth init` first.');
