@@ -36,32 +36,37 @@ Verify the implementation against acceptance criteria. Create a verification che
    ```markdown
    # Verify
 
-   ## AI Verification
-   - [ ] <item AI can verify by running commands or reading code>
-   - [ ] <item AI can verify by running commands or reading code>
+   ## Code Review
+   - [ ] <generated based on actual diff — scope, side effects, conventions, security, etc.>
 
    ## Manual Verification
-   - [ ] <item that requires human testing> — <how to test>
-   - [ ] <item that requires human testing> — <how to test>
+   > This change affects xxx page/module — worth a quick manual check to confirm everything works as expected.
    ```
 
-   Each item should be specific and verifiable — not vague ("works correctly") but concrete ("dark mode toggle persists after page refresh").
+   Each item should be specific and verifiable — not vague ("works correctly") but concrete ("no unintended imports added to the auth module").
 
-4. **Run AI Verification**
+4. **Run Code Review**
 
-   For each item in AI Verification:
-   - Run the relevant commands (tests, type checks, linting, curl, etc.)
-   - Read code to confirm implementation matches requirements
-   - Mark items as done: `- [ ]` → `- [x]`
-   - If an item fails, report what went wrong and ask for guidance
+   Review the actual code diff (use `git diff` against the base branch or recent commits). Generate checklist items based on what's actually relevant to this change. Consider:
+   - Are changes scoped to what tasks.md specified? Flag any unrelated modifications.
+   - Do changes follow the project's existing patterns? (naming, file structure, imports, etc.)
+   - Are there unintended side effects on other modules? Check imports and references.
+   - Is there code duplication that could be consolidated?
+   - Are there potential security issues? (unsanitized input, hardcoded secrets, exposed endpoints)
+   - Is error handling appropriate for the context?
+   - Run available verification commands (tests, type checks, linting)
 
-5. **Guide Manual Verification**
+   Only include items that are relevant to the actual diff. Don't add generic items that don't apply.
 
-   Present the Manual Verification items to the user:
-   - Explain what to test and how
-   - Wait for user feedback on each item
-   - Mark items as the user confirms: `- [ ]` → `- [x]`
-   - If an item fails, suggest going back to fix it with `/smooth:apply`
+   Mark items as done or report issues found. If issues are significant, suggest going back to `/smooth:apply` to fix.
+
+5. **Manual Verification hint**
+
+   Based on the change scope, give the user a brief hint about what to manually check. Keep it to 1-2 sentences, e.g.:
+   - "This change affects the settings page theme toggle — worth a quick manual check on the animation and persistence."
+   - "This change touches the payment flow — worth a quick manual test of the checkout path."
+
+   Don't list exhaustive test cases. Just point the user to the right area.
 
 6. **Clean up**
 
@@ -77,8 +82,8 @@ Verify the implementation against acceptance criteria. Create a verification che
 
 ## Guardrails
 
-- **Don't skip items** — Every acceptance criterion should map to at least one verification item
+- **Be thorough** — Code Review should cover all changed files, not just the main one
 - **Be specific** — "API returns 200" not "API works"
 - **Clean up after yourself** — Remove temporary test files, scripts, or debug code
 - **Don't fix bugs here** — If verification fails, suggest going back to `/smooth:apply`, don't fix inline
-- **Manual items need instructions** — Tell the user exactly what to do and what to look for
+- **Keep manual hints brief** — Point the user to the right area, don't write exhaustive test plans
