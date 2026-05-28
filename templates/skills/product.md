@@ -45,17 +45,40 @@ Enter product mode. Think through requirements with the user. Capture decisions 
 
    Explore the problem space with the user. As you discuss, continuously update `smooth/<name>/product.md`.
 
-   product.md should evolve to include:
-   - **Background & Motivation** — Why this change matters
-   - **Goals** — What success looks like
-   - **Scope** — What's in scope and explicitly out of scope
-   - **User Scenarios** — Who needs what, when
-   - **Acceptance Criteria** — How to know it's done
-   - **Discussion Points** — Items that need technical investigation before the product decision can be finalized. Each point must include the reason why it matters for the product outcome.
+   **Think along this chain — these are reasoning steps, not required sections.** A simple change may only need a couple of them; a complex one walks the whole chain. Decide which to write based on what the change actually needs.
+
+   **Main reasoning chain:**
+
+   1. **Background** — Current state and why now. What's the situation, what changed, what triggered this.
+   2. **Root Cause** — Dig past the surface symptom to the underlying cause. Surface complaint ≠ root cause.
+   3. **Expected Benefit** — What value this change is expected to produce (user / business / strategic / cost). State it concretely enough that someone could later check whether you got it.
+   4. **Solution** — The product-level *mechanism* (not technical implementation). See the Solution thinking guide below.
+   5. **Blockers** — Things that could stop this change or invalidate the plan: open questions needing technical investigation, dependencies, risks, unknowns. Each entry: (a) what's blocking / unclear, (b) why it matters, (c) how it might be resolved (and when — many of these get resolved in the technical phase).
+
+   **Supporting detail (add once the main chain is clear and the change needs sharper definition):**
+
+   - **User Scenarios** — Specific narratives: who, in what situation, doing what.
+   - **Scope** — Explicit In / Out lists. Use when the boundary is non-obvious.
+   - **Acceptance Criteria** — Verifiable system behavior the change must satisfy. Use for changes where "done" needs a contract.
 
    Don't wait until the end to write — update after each meaningful exchange.
 
-   **Discussion Points** are the last section of product.md. They capture items where the product decision depends on technical feasibility or cost. Each entry should state: (1) what needs to be investigated, and (2) why the answer affects the product direction. These will be resolved during the technical phase, and their conclusions will be written back into the relevant sections of product.md.
+   ---
+
+   **Solution thinking guide**
+
+   Solution is the most subtle step. Use these prompts (answer the ones that fit, skip the rest):
+
+   - *Candidates* — What are 2-3 plausible approaches? Listing rejected options is valuable; it shows the chosen one wasn't a default.
+   - *Shape* — Which kind of solution is this?
+     - Direct fix (root cause is removable)
+     - Workaround (root cause can't be touched short-term)
+     - Rebuild (the system itself is wrong)
+     - Education / guidance (root cause is a perception gap, not a system gap)
+     - Deletion (the thing shouldn't exist)
+   - *Traceability* — Which Root Cause does it actually address? Which Benefits does it actually produce? If the chain doesn't connect, the solution is wrong or the framing is wrong.
+   - *Why not the others* — Reasons for rejecting each candidate.
+   - *Layer check* — Describe only the **mechanism** ("user toggles theme in settings, preference persists"), not the **implementation** ("React Context + CSS variables"). If the description still holds after a tech-stack swap, it's mechanism. If it doesn't, it's implementation — that belongs in technical.md.
 
 ---
 
@@ -74,11 +97,14 @@ If artifacts exist, read them and continue the conversation from that context.
 
 | Insight Type | Where to Capture |
 |---|---|
-| Why we're doing this | `product.md` Background & Motivation |
-| What we're building | `product.md` Goals |
-| What's out of scope | `product.md` Scope |
-| Acceptance criteria | `product.md` Acceptance Criteria |
-| Needs technical input | `product.md` Discussion Points |
+| Current state, what triggered this | `product.md` Background |
+| Underlying cause behind the symptom | `product.md` Root Cause |
+| What value we expect to produce | `product.md` Expected Benefit |
+| Chosen mechanism + rejected alternatives | `product.md` Solution |
+| Open question, risk, dependency | `product.md` Blockers |
+| Specific user narrative | `product.md` User Scenarios *(if needed)* |
+| Explicit in/out boundary | `product.md` Scope *(if needed)* |
+| Verifiable behavior the change must satisfy | `product.md` Acceptance Criteria *(if needed)* |
 
 ### Offer to move forward
 
@@ -104,7 +130,7 @@ Or keep exploring — no pressure to move on.
 ## Guardrails
 
 - **Don't implement** - Never write application code. Creating/updating product.md is fine.
-- **Don't make technical decisions** - If a decision requires reading code or understanding architecture, add it to Discussion Points instead.
+- **Don't make technical decisions** - If a decision requires reading code or understanding architecture, add it to Blockers instead.
 - **Don't dump** - Don't output a complete document and ask "Does this look good?". Discuss first, write incrementally.
 - **Don't fake understanding** - If something is unclear, dig deeper
 - **Do write as you go** - Update documents after each meaningful exchange

@@ -31,36 +31,42 @@ Enter technical design mode. Design the implementation with the user. Capture de
 
 ## What You Do
 
-1. **Resolve Discussion Points from product.md**
+1. **Resolve Blockers from product.md**
 
    Read `product.md` for the change. If `product.md` doesn't exist, suggest running `/smooth:product` first.
 
-   Check if `product.md` has a **Discussion Points** section. If it does:
-   - Read relevant code to investigate each point (feasibility, cost, existing patterns)
+   Check if `product.md` has a **Blockers** section. If it does:
+   - Read relevant code to investigate each blocker (feasibility, cost, existing patterns)
    - Discuss findings with the user
-   - Once a point is resolved, update `product.md`: remove the point from Discussion Points and incorporate the decision into the appropriate section (Goals, Scope, etc.), including the reason why this approach was chosen
-   - Repeat until all discussion points are resolved
+   - Once a blocker is resolved, update `product.md`: remove it from Blockers and fold the resolution into the relevant section (Solution, Expected Benefit, Scope, etc.), including the reason why this approach was chosen
+   - Repeat until all blockers are resolved or accepted as known risks
 
-   This step ensures the product requirements are finalized before designing the architecture. The final `product.md` should have no remaining discussion points.
+   This step ensures the product requirements are finalized before designing the architecture. The final `product.md` should have no unresolved blockers.
 
-   If there are no Discussion Points, skip directly to step 2.
+   If there are no Blockers, skip directly to step 2.
 
 2. **Design and write technical.md**
 
    Based on the finalized `product.md`, explore the technical design with the user. Continuously update `smooth/<name>/technical.md`.
 
+   **Organize by feature, not by artifact type.** Don't list "all files affected" then "all types" then "all functions" globally — that's horizontal slicing. Group everything for one feature together (its files, types, functions, decisions), so each feature block is self-contained and can be reviewed, discussed, or pulled into tasks.md as a unit.
+
    technical.md should evolve to include:
-   - **Architecture Overview** — System diagram (ASCII art)
-   - **New/Modified Modules** — File plan, what goes where
-   - **Interface Design** — TypeScript types, function signatures
-   - **Core Logic** — Key algorithms, state management, data flow
-   - **Integration Points** — Which existing files need changes
-   - **Design Decisions** — What was chosen and why (Q&A format)
-   - **Performance Considerations** — If relevant
-   - **Relationship to Existing Code** — Reuse what, create what, don't touch what
-   - **Technical Acceptance Criteria** — What to verify from a technical perspective (e.g., performance thresholds, error handling, edge cases, backward compatibility)
+
+   - **Architecture Overview** — System diagram (ASCII art). Show the big picture and how features relate to each other.
+   - **Features** — Short list of the features this change contains. Acts as a table of contents for the per-feature sections below.
+   - **Cross-cutting Foundation** — Shared groundwork that multiple features depend on: shared types, utilities, infrastructure changes, cross-feature performance considerations. **Build this first** — features below stand on top of it. *Strict rule: only put things here that are genuinely shared by 2+ features. Anything serving a single feature belongs in that feature's section.*
+   - **Feature: `<name>`** — One section per feature, ordered by dependency (foundation-dependent ones later). Each feature section contains:
+     - *Files affected* — which files are new/modified/touched for this feature
+     - *Types / Interfaces* — TypeScript types and contracts this feature introduces
+     - *Functions / Methods* — new or modified functions and their signatures
+     - *Relationship to Existing Code* — what this feature reuses, replaces, or leaves alone
+     - *Design Decisions* — Q&A format: what was chosen and why, alternatives considered
+   - **Technical Acceptance Criteria** — What to verify from a technical perspective (performance thresholds, error handling, edge cases, backward compatibility). Can be grouped per-feature or kept cross-cutting, whichever is clearer.
 
    Don't wait until the end to write — update after each meaningful design decision.
+
+   **Why this order matters:** Architecture → Features list → Foundation → per-Feature sections roughly mirrors implementation order. Foundation gets built first; features build on it. When tasks.md reads this top-to-bottom, the task order falls out naturally.
 
 3. **Update previous documents**
 
@@ -107,11 +113,12 @@ Enter technical design mode. Design the implementation with the user. Capture de
 
 | Decision Type | Where to Capture |
 |---|---|
-| Architecture choice | `technical.md` Architecture Overview |
-| Module boundaries | `technical.md` New/Modified Modules |
-| API/interface design | `technical.md` Interface Design |
-| Implementation approach | `technical.md` Core Logic |
-| What to reuse vs create | `technical.md` Relationship to Existing Code |
+| Big-picture architecture, feature relationships | `technical.md` Architecture Overview |
+| Shared types/utilities/infra used by 2+ features | `technical.md` Cross-cutting Foundation |
+| Files, types, functions, decisions for a single feature | `technical.md` Feature: `<name>` (the relevant one) |
+| What this feature reuses vs creates | Inside that feature's *Relationship to Existing Code* |
+| Why a particular technical choice was made | Inside that feature's *Design Decisions* (or Foundation's, if cross-cutting) |
+| Verification thresholds, edge cases | `technical.md` Technical Acceptance Criteria |
 | Requirement change | `product.md` (update) |
 
 ### Offer to move forward
