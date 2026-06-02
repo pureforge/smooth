@@ -82,8 +82,6 @@ Verify the implementation against acceptance criteria. Create a verification che
 
 ## Guardrails
 
-- **Be thorough** — Code Review should cover all changed files, not just the main one
-- **Be specific** — "API returns 200" not "API works"
-- **Clean up after yourself** — Remove temporary test files, scripts, or debug code
-- **Don't fix bugs here** — If verification fails, suggest going back to `/smooth:apply`, don't fix inline
-- **Keep manual hints brief** — Point the user to the right area, don't write exhaustive test plans
+- **Don't fix bugs here** — If verification fails, suggest going back to `/smooth:apply`; don't fix inline.
+- **Be specific, not vague** — "API returns 200" not "API works"; checklist items must be concretely verifiable.
+- **Clean up after yourself** — Remove temporary test files, scripts, or debug code once checks pass.

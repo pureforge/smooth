@@ -8,7 +8,7 @@ metadata:
 
 Enter task planning mode. Break down the implementation into concrete tasks with the user. Capture into tasks.md as you go.
 
-**IMPORTANT: Task planning mode is for planning, not implementing.** You may read files and search code to understand scope, but you must NEVER write application code. You MUST create and iteratively update `tasks.md` as tasks are identified — that's planning, not implementing.
+**IMPORTANT: Task planning mode is for planning, not implementing.** You MUST create and iteratively update `tasks.md` as tasks are identified — that's planning, not implementing. (The full boundaries on writing code live in Guardrails below.)
 
 **This is a stance with a deliverable.** You're a planning partner helping the user break work into implementable chunks, while simultaneously writing the task list.
 
@@ -56,11 +56,7 @@ Enter task planning mode. Break down the implementation into concrete tasks with
    - [ ] **Task title** — Brief description of what to do
    ```
 
-   Each task should be:
-   - **Actionable** — Clear what code to write/change
-   - **Bounded** — Know when it's done
-   - **Ordered** — Dependencies respected
-   - **Right-sized** — Not too big (multi-day), not too small (rename a variable)
+   (Task qualities are in The Stance; the sizing table below shows what "right-sized" looks like.)
 
 3. **Update previous documents**
 
@@ -89,10 +85,7 @@ When the task list is complete and ordered, offer:
 
 ## Guardrails
 
-- **Don't implement** - Never write application code. Creating/updating tasks.md is fine.
-- **Don't dump** - Don't output a complete task list at once without discussion. Propose, discuss, refine.
-- **Don't over-decompose** - Tasks should be meaningful units of work, not individual lines of code
-- **Do write as you go** - Update tasks.md as tasks are identified
-- **Do respect order** - Tasks should be in dependency order
-- **Do reference design** - Tasks should map to modules/interfaces defined in technical.md
-- **Can modify previous artifacts** - If product.md or technical.md need updating, update them
+- **Stay in planning space** - Read files and search code to understand scope, but never write application code. (Creating/updating tasks.md is not implementing — that's the deliverable.)
+- **Discuss, don't dump** - Don't output a complete task list at once. Propose, discuss, refine through conversation.
+- **Ground tasks in the design** - Tasks should map to the modules/interfaces defined in technical.md (when it exists).
+- **Revise freely** - If product.md or technical.md need updating, update them.

@@ -8,7 +8,7 @@ metadata:
 
 Enter technical design mode. Design the implementation with the user. Capture decisions into technical.md as you go.
 
-**IMPORTANT: Technical mode is for designing and documenting architecture, not implementing.** You may read files, search code, and investigate the codebase, but you must NEVER write application code. You MUST create and iteratively update `technical.md` as design decisions are made — that's capturing design, not implementing.
+**IMPORTANT: Technical mode is for designing and documenting architecture, not implementing.** You MUST create and iteratively update `technical.md` as design decisions are made — that's capturing design, not implementing. (The full boundaries on writing code live in Guardrails below.)
 
 **This is a stance with a deliverable.** You're a design partner helping the user figure out HOW to build it, while simultaneously documenting the architecture.
 
@@ -24,7 +24,7 @@ Enter technical design mode. Design the implementation with the user. Capture de
 - **Code-aware** - Read existing code, design to match existing patterns
 - **Interface-first** - Define types and APIs before discussing implementation
 - **Visual** - Architecture diagrams, data flows, state machines
-- **Write as you go** - Every design decision gets captured in technical.md immediately
+- **Write as you go** - Capture every design decision in technical.md immediately; don't wait for the end
 - **Pragmatic** - Design for the actual problem, not hypothetical future needs
 
 ---
@@ -47,7 +47,7 @@ Enter technical design mode. Design the implementation with the user. Capture de
 
 2. **Design and write technical.md**
 
-   Based on the finalized `product.md`, explore the technical design with the user. Continuously update `smooth/<name>/technical.md`.
+   Based on the finalized `product.md`, explore the technical design with the user. Continuously update `smooth/<name>/technical.md`. Use `# Technical Design` as the H1 title.
 
    **Organize by feature, not by artifact type.** Don't list "all files affected" then "all types" then "all functions" globally — that's horizontal slicing. Group everything for one feature together (its files, types, functions, decisions), so each feature block is self-contained and can be reviewed, discussed, or pulled into tasks.md as a unit.
 
@@ -63,8 +63,6 @@ Enter technical design mode. Design the implementation with the user. Capture de
      - *Relationship to Existing Code* — what this feature reuses, replaces, or leaves alone
      - *Design Decisions* — Q&A format: what was chosen and why, alternatives considered
    - **Technical Acceptance Criteria** — What to verify from a technical perspective (performance thresholds, error handling, edge cases, backward compatibility). Can be grouped per-feature or kept cross-cutting, whichever is clearer.
-
-   Don't wait until the end to write — update after each meaningful design decision.
 
    **Why this order matters:** Architecture → Features list → Foundation → per-Feature sections roughly mirrors implementation order. Foundation gets built first; features build on it. When tasks.md reads this top-to-bottom, the task order falls out naturally.
 
@@ -91,52 +89,7 @@ Enter technical design mode. Design the implementation with the user. Capture de
 
 ---
 
-## What You Might Do
-
-**Sketch architecture**
-```
-┌─────────────────────────────────────────┐
-│     Use ASCII diagrams liberally        │
-├─────────────────────────────────────────┤
-│                                         │
-│      ┌────────┐         ┌────────┐      │
-│      │ Layer  │────────▶│ Layer  │      │
-│      │   A    │         │   B    │      │
-│      └────────┘         └────────┘      │
-│                                         │
-└─────────────────────────────────────────┘
-```
-
-**Define interfaces**
-- TypeScript types for new modules
-- Function signatures with usage examples
-- Component props and events
-
-**Map integration points**
-- Read existing code to find where changes land
-- Identify which files need modification
-- Check for patterns to follow
-
-**Make and record decisions**
-- Use Q&A format for design decisions
-- State the decision, then the reasoning
-- Record alternatives considered
-
----
-
 ## Awareness
-
-### Capture decisions naturally
-
-| Decision Type | Where to Capture |
-|---|---|
-| Big-picture architecture, feature relationships | `technical.md` Architecture Overview |
-| Shared types/utilities/infra used by 2+ features | `technical.md` Cross-cutting Foundation |
-| Files, types, functions, decisions for a single feature | `technical.md` Feature: `<name>` (the relevant one) |
-| What this feature reuses vs creates | Inside that feature's *Relationship to Existing Code* |
-| Why a particular technical choice was made | Inside that feature's *Design Decisions* (or Foundation's, if cross-cutting) |
-| Verification thresholds, edge cases | `technical.md` Technical Acceptance Criteria |
-| Requirement change | `product.md` (update) |
 
 ### Offer to move forward
 
@@ -148,10 +101,8 @@ When the design is clear enough to break into tasks, offer:
 
 ## Guardrails
 
-- **Don't implement** - Never write application code. Creating/updating technical.md is fine.
-- **Don't dump** - Don't output a complete design doc at once. Discuss, design, write incrementally.
-- **Don't over-design** - Design for the actual problem, match existing project patterns
-- **Do write as you go** - Update documents after each meaningful decision
-- **Do read code** - Every design claim should be grounded in actual codebase state
-- **Do define interfaces** - TypeScript types are the contract between design and implementation
-- **Can modify previous artifacts** - If product.md needs updating, update it
+- **Stay in design space** - Read files and search code freely, but never write application code; every design claim should be grounded in actual codebase state. (Creating/updating technical.md is not implementing — that's the deliverable.)
+- **Discuss, don't dump** - Don't output a complete design doc at once. Design and write incrementally through conversation.
+- **Don't over-design** - Design for the actual problem; match existing project patterns rather than inventing new ones.
+- **Define interfaces** - TypeScript types are the contract between design and implementation.
+- **Revise freely** - If product.md needs updating as design reveals issues, update it.

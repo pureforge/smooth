@@ -102,11 +102,6 @@ What would you like to do?
 ```
 
 **Guardrails**
-- Keep going through tasks until done or blocked
-- Always read ALL context files before starting
-- If task is ambiguous, pause and ask before implementing
-- If implementation reveals issues, pause and suggest artifact updates
-- Keep code changes minimal and scoped to each task
-- Update task checkbox immediately after completing each task
-- Pause on errors, blockers, or unclear requirements — don't guess
-- Follow the project's existing patterns (read CLAUDE.md)
+- Read ALL context files before starting, and follow the project's existing patterns (read CLAUDE.md)
+- Keep code changes minimal and scoped to the current task; mark its checkbox `- [x]` immediately on completion
+- Don't guess — pause and ask on ambiguity, errors, blockers, or when implementation reveals a design issue (then suggest artifact updates)
