@@ -68,6 +68,23 @@ Enter technical design mode. Design the implementation with the user. Capture de
 
    **Why this order matters:** Architecture → Features list → Foundation → per-Feature sections roughly mirrors implementation order. Foundation gets built first; features build on it. When tasks.md reads this top-to-bottom, the task order falls out naturally.
 
+   ---
+
+   **When Design Decisions involves comparing multiple options**
+
+   Give the user a comparison, not just a conclusion. Don't pick silently.
+
+   *Reference dimensions* (a thinking checklist, not a required schema — use them to avoid blind spots):
+
+   - *Implementation cost* — effort, complexity, new concepts introduced
+   - *End result* — how well it solves the problem, output quality
+   - *Maintenance cost* — ongoing burden, debt, test complexity
+   - *Risk & reversibility* — what could go wrong, how hard to roll back
+
+   When you actually write the comparison, only list points that *matter for this decision*. If a dimension is the same across all candidates, drop it. If a candidate has a single decisive trait, one line is enough — don't pad to fill the table.
+
+   After the comparison, state: **the recommendation**, **which consideration weighed most this time** (not all dimensions are equally important per decision), and **what choosing this means giving up** (the accepted trade-off).
+
 3. **Update previous documents**
 
    - Design reveals requirement issues → update product.md
