@@ -18,9 +18,9 @@ Archive a completed change.
    - Auto-select if only one active change exists
    - If ambiguous, list available changes:
      ```bash
-     ls smooth/ | grep -v archive
+     npx smooth list
      ```
-     Use **AskUserQuestion** to let the user select.
+     Use **AskUserQuestion** to let the user select. A change name may be nested for a phased requirement (e.g. `big-feature/phase-1`).
 
 2. **Check completion status**
 
@@ -33,10 +33,16 @@ Archive a completed change.
 
 3. **Perform the archive**
 
+   Archive a single change. For a nested phase, archive only that phase and leave the container directory (with its other phases) in place. Flatten any `/` in the name to `-` for the archive directory:
+
    ```bash
    mkdir -p smooth/archive
-   mv smooth/<name> smooth/archive/$(date +%Y-%m-%d)-<name>
+   # flat change "foo":            mv smooth/foo            smooth/archive/$(date +%Y-%m-%d)-foo
+   # nested phase "big/phase-1":   mv smooth/big/phase-1    smooth/archive/$(date +%Y-%m-%d)-big-phase-1
+   mv smooth/<name> smooth/archive/$(date +%Y-%m-%d)-<name-with-slashes-as-dashes>
    ```
+
+   If the change was the last remaining phase in its container and the container is now empty, remove the empty container directory.
 
 4. **Display summary**
 

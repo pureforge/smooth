@@ -1,6 +1,7 @@
-import { existsSync, readdirSync, statSync } from 'fs';
+import { existsSync } from 'fs';
 import { join } from 'path';
-import { resolveGraph, isReadyForApply, getTaskProgress, formatStatus } from './graph.js';
+import { resolveGraph, getTaskProgress, formatStatus } from './graph.js';
+import { discoverChanges, findChange } from './changes.js';
 
 export function status(targetPath, changeName) {
   const changesDir = join(targetPath, 'smooth');
@@ -10,9 +11,7 @@ export function status(targetPath, changeName) {
     return;
   }
 
-  const active = readdirSync(changesDir).filter((name) => {
-    return name !== 'archive' && statSync(join(changesDir, name)).isDirectory();
-  });
+  const active = discoverChanges(changesDir);
 
   if (!changeName) {
     if (active.length === 0) {
@@ -20,22 +19,22 @@ export function status(targetPath, changeName) {
       return;
     }
     if (active.length === 1) {
-      changeName = active[0];
+      changeName = active[0].id;
     } else {
       console.log('Multiple active changes. Specify one:\n');
-      for (const name of active) console.log(`  smooth status ${name}`);
+      for (const c of active) console.log(`  smooth status ${c.id}`);
       return;
     }
   }
 
-  const changeDir = join(changesDir, changeName);
-  if (!existsSync(changeDir)) {
+  const change = findChange(changesDir, changeName);
+  if (!change) {
     console.log(`Change "${changeName}" not found.`);
     return;
   }
 
-  console.log(`\n  Change: ${changeName}\n`);
-  console.log(formatStatus(changeDir));
+  console.log(`\n  Change: ${change.id}\n`);
+  console.log(formatStatus(change.dir));
   console.log();
 }
 
@@ -47,9 +46,7 @@ export function list(targetPath) {
     return;
   }
 
-  const active = readdirSync(changesDir).filter((name) => {
-    return name !== 'archive' && statSync(join(changesDir, name)).isDirectory();
-  });
+  const active = discoverChanges(changesDir);
 
   if (active.length === 0) {
     console.log('No active changes.\n');
@@ -58,13 +55,12 @@ export function list(targetPath) {
   }
 
   console.log(`Active changes (${active.length}):\n`);
-  for (const name of active) {
-    const changeDir = join(changesDir, name);
-    const graph = resolveGraph(changeDir);
+  for (const { id, dir } of active) {
+    const graph = resolveGraph(dir);
     const done = graph.filter((a) => a.status === 'done').map((a) => a.id);
-    const progress = getTaskProgress(changeDir);
+    const progress = getTaskProgress(dir);
     const taskInfo = progress ? ` [${progress.done}/${progress.total}]` : '';
-    console.log(`  ${name}  (${done.join(' → ') || 'empty'})${taskInfo}`);
+    console.log(`  ${id}  (${done.join(' → ') || 'empty'})${taskInfo}`);
   }
   console.log();
 }

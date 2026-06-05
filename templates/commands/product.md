@@ -43,6 +43,8 @@ Enter product mode. Think through requirements with the user. Capture decisions 
 
    If the directory already exists, read existing artifacts for context and continue from where things left off.
 
+   For a phase of a larger requirement (see "Suggest phasing" below), the name is nested — `mkdir -p smooth/<big-name>/phase-1` — and everything below operates inside that phase directory.
+
 2. **Discuss and write product.md**
 
    Explore the problem space with the user. As you discuss, continuously update `smooth/<name>/product.md`. Use `# Product Requirements` as the H1 title.
@@ -92,6 +94,24 @@ ls smooth/<name>/ 2>/dev/null
 ```
 
 If artifacts exist, read them and continue the conversation from that context.
+
+### Suggest phasing when the scope is too big
+
+No command or flag controls this — it's a judgment made during the discussion. If a requirement is too large to build or ship in one go, raise it and propose splitting into phases (the user may also ask for this directly). A good first phase stands and ships on its own.
+
+When you phase, the big requirement becomes a **container directory** holding one subdirectory per phase, and **each phase is a full change** (its own product.md → technical.md → tasks.md → apply → verify → archive):
+
+```
+smooth/<big-name>/
+  phase-1/product.md     ← a complete change, worked phase by phase
+  phase-2/product.md
+  phase-3/product.md
+```
+
+Keep it lightweight:
+- Only flesh out the phase being worked on. Its product.md runs the full reasoning chain for that phase alone.
+- Near the top of phase 1's product.md, in one or two lines, note the overall goal and a sketch of the later phases — just enough to see where this is heading. Later phases can stay vague; they get written when their turn comes.
+- Each phase is designed, shipped, and archived on its own. The tooling (`smooth list`, `status`, `validate`) discovers each phase as a change named `<big-name>/phase-N`.
 
 ### Offer to move forward
 

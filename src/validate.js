@@ -1,6 +1,7 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'fs';
 import { join } from 'path';
 import { resolveGraph } from './graph.js';
+import { discoverChanges, findChange } from './changes.js';
 
 export function validate(targetPath, changeName) {
   const smoothDir = join(targetPath, 'smooth');
@@ -10,11 +11,13 @@ export function validate(targetPath, changeName) {
     return;
   }
 
-  const active = readdirSync(smoothDir).filter((name) => {
-    return name !== 'archive' && statSync(join(smoothDir, name)).isDirectory();
-  });
-
-  const targets = changeName ? [changeName] : active;
+  let targets;
+  if (changeName) {
+    const change = findChange(smoothDir, changeName);
+    targets = change ? [change] : [{ id: changeName, dir: null }];
+  } else {
+    targets = discoverChanges(smoothDir);
+  }
 
   if (targets.length === 0) {
     console.log('No active changes to validate.');
@@ -23,15 +26,14 @@ export function validate(targetPath, changeName) {
 
   let allValid = true;
 
-  for (const name of targets) {
-    const changeDir = join(smoothDir, name);
-    if (!existsSync(changeDir)) {
-      console.log(`  ✗ ${name} — not found`);
+  for (const { id, dir } of targets) {
+    if (!dir || !existsSync(dir)) {
+      console.log(`  ✗ ${id} — not found`);
       allValid = false;
       continue;
     }
 
-    const { errors, warnings } = validateChange(changeDir, name);
+    const { errors, warnings } = validateChange(dir, id);
     const valid = errors.length === 0;
     if (!valid) allValid = false;
 
@@ -40,7 +42,7 @@ export function validate(targetPath, changeName) {
     if (errors.length) counts.push(`${errors.length} error${errors.length > 1 ? 's' : ''}`);
     if (warnings.length) counts.push(`${warnings.length} warning${warnings.length > 1 ? 's' : ''}`);
 
-    console.log(`  ${icon} ${name}${counts.length ? ' — ' + counts.join(', ') : ''}`);
+    console.log(`  ${icon} ${id}${counts.length ? ' — ' + counts.join(', ') : ''}`);
     for (const e of errors) console.log(`      ✗ ${e}`);
     for (const w of warnings) console.log(`      ⚠ ${w}`);
   }
@@ -92,13 +94,13 @@ function validateChange(changeDir, name) {
     }
   }
 
-  // Unexpected files
-  const expected = new Set(['product.md', 'technical.md', 'tasks.md']);
+  // Unexpected files (subdirectories are allowed — e.g. nested phases)
+  const expected = new Set(['product.md', 'technical.md', 'tasks.md', 'verify.md']);
   const entries = readdirSync(changeDir);
   for (const entry of entries) {
-    if (!expected.has(entry) && !entry.startsWith('.')) {
-      warnings.push(`Unexpected file: ${entry}`);
-    }
+    if (expected.has(entry) || entry.startsWith('.')) continue;
+    if (statSync(join(changeDir, entry)).isDirectory()) continue;
+    warnings.push(`Unexpected file: ${entry}`);
   }
 
   return { errors, warnings };
