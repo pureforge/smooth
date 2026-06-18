@@ -34,6 +34,7 @@ Enter task planning mode. Break down the implementation into concrete tasks with
    Read existing artifacts for the change:
    - `product.md` — understand what we're building
    - `technical.md` — understand the design (if exists)
+   - `workpad.md` — understand current plan, acceptance notes, validation ideas, and confusions (if exists)
 
    If `product.md` doesn't exist, suggest running `/smooth:product` first.
 
@@ -61,6 +62,7 @@ Enter task planning mode. Break down the implementation into concrete tasks with
 
    - Task breakdown reveals missing requirements → update product.md
    - Task breakdown reveals design gaps → update technical.md
+   - Task breakdown changes execution order or validation ideas → update workpad.md
 
 ---
 

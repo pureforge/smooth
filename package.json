@@ -1,14 +1,16 @@
 {
   "name": "@pureforge/smooth",
-  "version": "0.0.9",
-  "description": "Smooth — workflow specification for AI coding assistants",
+  "version": "0.1.0",
+  "description": "Smooth — local-first project development harness for AI coding assistants",
   "keywords": [
     "smooth",
-    "specs",
     "cli",
     "ai",
+    "agent",
     "workflow",
-    "development"
+    "development",
+    "harness",
+    "verification"
   ],
   "license": "MIT",
   "type": "module",
@@ -17,11 +19,17 @@
   },
   "files": [
     "bin",
-    "src",
+    "src/changes.js",
+    "src/check.js",
+    "src/graph.js",
+    "src/init.js",
+    "src/status.js",
+    "src/validate.js",
     "templates"
   ],
   "scripts": {
-    "lint": "eslint src/",
+    "lint": "node --check bin/smooth.js && node --check src/*.js",
+    "verify": "npm run lint && npm test",
     "test": "node --test src/**/*.test.js"
   },
   "engines": {

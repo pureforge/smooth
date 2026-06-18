@@ -55,7 +55,7 @@ export function validate(targetPath, changeName) {
   }
 }
 
-function validateChange(changeDir, name) {
+export function validateChange(changeDir, name) {
   const errors = [];
   const warnings = [];
 
@@ -84,6 +84,10 @@ function validateChange(changeDir, name) {
     }
   }
 
+  if (!existsSync(join(changeDir, 'workpad.md'))) {
+    warnings.push('Missing workpad.md — harness process record not started');
+  }
+
   // tasks.md format check
   const tasksPath = join(changeDir, 'tasks.md');
   if (existsSync(tasksPath)) {
@@ -94,8 +98,28 @@ function validateChange(changeDir, name) {
     }
   }
 
+  const lessonsPath = join(changeDir, 'lessons.md');
+  if (existsSync(lessonsPath)) {
+    const content = readFileSync(lessonsPath, 'utf-8');
+    const usesOldCheckFormat = /Candidate check:/i.test(content);
+    if (usesOldCheckFormat) {
+      warnings.push('lessons.md uses old `Candidate check` format — use `Harness improvement` with Type/Target/Idea');
+    }
+    if (!usesOldCheckFormat && hasLessonContent(content) && !/Harness improvement:/i.test(content)) {
+      warnings.push('lessons.md has lesson content but no `Harness improvement` target');
+    }
+  }
+
   // Unexpected files (subdirectories are allowed — e.g. nested phases)
-  const expected = new Set(['product.md', 'technical.md', 'tasks.md', 'verify.md']);
+  const expected = new Set([
+    'product.md',
+    'technical.md',
+    'tasks.md',
+    'workpad.md',
+    'verify.md',
+    'pitfalls.md',
+    'lessons.md',
+  ]);
   const entries = readdirSync(changeDir);
   for (const entry of entries) {
     if (expected.has(entry) || entry.startsWith('.')) continue;
@@ -104,4 +128,15 @@ function validateChange(changeDir, name) {
   }
 
   return { errors, warnings };
+}
+
+function hasLessonContent(content) {
+  const body = content
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith('#'))
+    .join('\n');
+
+  if (!body) return false;
+  return !/no notable (pitfalls?|lessons?)/i.test(body);
 }

@@ -68,7 +68,7 @@ export function detectTools(targetPath) {
   const detected = [];
   const detectionMap = {
     claude: ['.claude'],
-    cursor: ['.cursor', '.cursorules'],
+    cursor: ['.cursor', '.cursorrules'],
     windsurf: ['.windsurf', '.windsurfrules'],
     copilot: ['.github/copilot-instructions.md', '.github/instructions', '.github/prompts', '.github/agents'],
     cline: ['.cline', '.clinerules'],
@@ -98,10 +98,11 @@ export async function init(targetPath, toolIds) {
     }
   }
 
-  console.log('smooth init — setting up spec-driven workflow\n');
+  console.log('smooth init — setting up project development harness\n');
 
   mkdirSync(join(targetPath, 'smooth'), { recursive: true });
 
+  let initializedTools = 0;
   for (const toolId of toolIds) {
     const tool = TOOLS[toolId];
     if (!tool) {
@@ -135,15 +136,23 @@ export async function init(targetPath, toolIds) {
     const parts = [`${COMMANDS.length} commands`];
     if (skillCount > 0) parts.push(`${skillCount} skills`);
     console.log(`  ✓ ${tool.name}: ${parts.join(' + ')}`);
+    initializedTools++;
   }
 
-  console.log(`\n  smooth/ — change artifacts\n`);
+  if (initializedTools === 0) {
+    console.error('\nNo valid AI tools were initialized.');
+    process.exit(1);
+  }
+
+  console.log(`\n  smooth/ — change artifacts and harness records\n`);
   console.log('Getting started:');
   console.log('  /smooth:product "your idea"    — define what to build');
   console.log('  /smooth:technical              — design the architecture');
   console.log('  /smooth:tasks                  — break into implementable tasks');
   console.log('  /smooth:apply                  — implement tasks');
+  console.log('  /smooth:verify                 — verify and record evidence');
   console.log('  /smooth:archive                — archive completed change\n');
+  console.log('Harness checks are run from /smooth:verify when available. Advanced: smooth check <name>\n');
 }
 
 function wrapCursorRule(content) {

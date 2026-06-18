@@ -33,6 +33,7 @@ Enter technical design mode. Design the implementation with the user. Capture de
 1. **Resolve Blockers from product.md**
 
    Read `product.md` for the change. If `product.md` doesn't exist, suggest running `/smooth:product` first.
+   Also read `workpad.md` if it exists — it carries the current plan, acceptance notes, validation ideas, and confusions from earlier phases.
 
    Check if `product.md` has a **Blockers** section. If it does:
    - Read relevant code to investigate each blocker (feasibility, cost, existing patterns)
@@ -85,6 +86,7 @@ Enter technical design mode. Design the implementation with the user. Capture de
 3. **Update previous documents**
 
    - Design reveals requirement issues → update product.md
+   - Design resolves or introduces uncertainty → update workpad.md Notes / Confusions
 
 ---
 

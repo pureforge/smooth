@@ -4,6 +4,7 @@ import { resolve } from 'path';
 import { init, getAvailableTools } from '../src/init.js';
 import { status, list } from '../src/status.js';
 import { validate } from '../src/validate.js';
+import { check } from '../src/check.js';
 
 const args = process.argv.slice(2);
 const command = args[0];
@@ -16,6 +17,8 @@ function parseArgs(argv) {
       flags.tool = argv[++i];
     } else if (argv[i] === '--force' || argv[i] === '-f') {
       flags.force = true;
+    } else if (argv[i] === '--no-record') {
+      flags.record = false;
     } else if (!argv[i].startsWith('-')) {
       positional.push(argv[i]);
     }
@@ -51,6 +54,14 @@ switch (command) {
     break;
   }
 
+  case 'check': {
+    const { flags, positional } = parseArgs(args.slice(1));
+    const targetPath = resolve('.');
+    const ok = check(targetPath, positional[0], { record: flags.record });
+    if (!ok) process.exit(1);
+    break;
+  }
+
   case 'help':
   case '--help':
   case '-h':
@@ -67,7 +78,7 @@ switch (command) {
 }
 
 function printHelp() {
-  console.log(`smooth — spec-driven development workflow
+  console.log(`smooth — project development harness
 
 Usage:
   smooth init [path] [--tool <tools>]   Initialize smooth in a project
@@ -84,6 +95,10 @@ After init, use slash commands in your AI assistant:
   /smooth:technical   Discuss and create technical design
   /smooth:tasks       Discuss and break down task list
   /smooth:apply       Implement code step by step from tasks.md
+  /smooth:verify      Verify implementation and record evidence
   /smooth:archive     Archive completed changes
+
+Advanced harness runner:
+  smooth check [name] [--no-record]     Run project checks and record evidence
 `);
 }

@@ -12,11 +12,15 @@ import { join } from 'path';
  *   command    — the slash command that produces this artifact
  */
 const DEFAULT_SCHEMA = {
-  id: 'spec-driven',
+  id: 'harness',
   artifacts: [
     { id: 'product',   file: 'product.md',   required: true,  deps: [],          command: '/smooth:product' },
+    { id: 'workpad',   file: 'workpad.md',   required: false, deps: ['product'], command: '/smooth:product' },
     { id: 'technical', file: 'technical.md', required: false, deps: ['product'], command: '/smooth:technical' },
     { id: 'tasks',     file: 'tasks.md',     required: true,  deps: ['product'], command: '/smooth:tasks' },
+    { id: 'verify',    file: 'verify.md',    required: false, deps: ['tasks'],   command: '/smooth:verify' },
+    { id: 'pitfalls',  file: 'pitfalls.md',  required: false, deps: ['verify'],  command: '/smooth:verify' },
+    { id: 'lessons',   file: 'lessons.md',   required: false, deps: ['pitfalls'], command: '/smooth:archive' },
   ],
   applyRequires: ['product', 'tasks'],
 };
@@ -107,7 +111,7 @@ export function formatStatus(changeDir, schema = DEFAULT_SCHEMA) {
     lines.push(`  ${icon} ${node.id}${suffix}`);
   }
 
-  const next = graph.find((a) => a.status === 'ready');
+  const next = chooseNextAction(graph, changeDir);
   if (next) {
     lines.push('');
     lines.push(`  Next: ${next.command}`);
@@ -119,11 +123,36 @@ export function formatStatus(changeDir, schema = DEFAULT_SCHEMA) {
     if (progress && progress.remaining > 0) {
       lines.push(`  Ready for apply (${progress.done}/${progress.total} tasks done)`);
     } else if (progress && progress.remaining === 0) {
-      lines.push(`  All tasks complete — ready to archive`);
+      const verify = graph.find((a) => a.id === 'verify');
+      if (verify?.status === 'done') {
+        lines.push('  All tasks complete — ready to archive');
+      } else {
+        lines.push('  All tasks complete — ready to verify');
+      }
     }
   }
 
   return lines.join('\n');
+}
+
+function chooseNextAction(graph, changeDir) {
+  const byId = new Map(graph.map((node) => [node.id, node]));
+  const done = (id) => byId.get(id)?.status === 'done';
+
+  if (!done('product')) return byId.get('product');
+
+  const progress = getTaskProgress(changeDir);
+  if (progress) {
+    if (progress.remaining > 0) return { command: '/smooth:apply' };
+    if (!done('verify')) return byId.get('verify');
+    return { command: '/smooth:archive' };
+  }
+
+  if (!done('technical')) return byId.get('technical');
+  if (!done('tasks')) return byId.get('tasks');
+  if (!done('verify')) return byId.get('verify');
+
+  return null;
 }
 
 export { DEFAULT_SCHEMA };

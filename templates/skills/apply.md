@@ -27,6 +27,7 @@ Implement tasks from a change.
    - `product.md` — what we're building
    - `technical.md` — how to build it (if exists)
    - `tasks.md` — what to implement
+   - `workpad.md` — current plan, acceptance criteria, validation notes, and confusions (if exists)
 
    **IMPORTANT**: Read ALL available artifacts before starting. The design decisions are your implementation guide.
 
@@ -44,6 +45,7 @@ Implement tasks from a change.
    - Make the code changes required
    - Keep changes minimal and focused on the task
    - Mark task complete in tasks.md: `- [ ]` → `- [x]`
+   - Update workpad.md when progress, blockers, validation ideas, or confusions change
    - Continue to next task
 
    **Pause if:**
@@ -59,7 +61,7 @@ Implement tasks from a change.
    - Overall progress: "N/M tasks complete"
    - If all done: assess whether verification is needed and suggest next step:
      - **Needs verification** (UI changes, user-facing behavior, multi-module integration, complex logic) → "Implementation complete. This change has user-facing behavior worth verifying. (`/smooth:verify`)"
-     - **Can skip verification** (pure refactor, internal logic with good test coverage, config changes) → "Implementation complete. This is a clean internal change. Ready to archive? (`/smooth:archive`)"
+     - **Light verification is enough** (pure refactor, internal logic with good test coverage, config changes) → "Implementation complete. This looks low risk; run a light verification pass to record evidence. (`/smooth:verify`)"
    - If paused: explain why and wait for guidance
 
 **Output During Implementation**
@@ -84,7 +86,7 @@ Working on task 4/7: <task description>
 **Change:** <change-name>
 **Progress:** 7/7 tasks complete ✓
 
-All tasks complete! You can archive this change with `/smooth:archive`.
+All tasks complete! Run `/smooth:verify` to record verification evidence before archiving.
 ```
 
 **Output On Pause**
@@ -104,4 +106,4 @@ What would you like to do?
 **Guardrails**
 - Read ALL context files before starting, and follow the project's existing patterns (read CLAUDE.md)
 - Keep code changes minimal and scoped to the current task; mark its checkbox `- [x]` immediately on completion
-- Don't guess — pause and ask on ambiguity, errors, blockers, or when implementation reveals a design issue (then suggest artifact updates)
+- Don't guess — pause and ask on ambiguity, errors, blockers, or when implementation reveals a design issue (then update the relevant artifact/workpad)

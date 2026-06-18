@@ -32,6 +32,10 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      - name: Verify package
+        if: steps.version.outputs.changed == 'true'
+        run: npm run verify
+
       - name: Publish
         if: steps.version.outputs.changed == 'true'
         run: npm publish --access public
