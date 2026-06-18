@@ -30,7 +30,7 @@
   "scripts": {
     "lint": "node --check bin/smooth.js && node --check src/*.js",
     "verify": "npm run lint && npm test",
-    "test": "node --test src/**/*.test.js"
+    "test": "node --test src/*.test.js"
   },
   "engines": {
     "node": ">=18.0.0"
