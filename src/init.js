@@ -6,6 +6,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEMPLATES_DIR = join(__dirname, '..', 'templates');
 
 const COMMANDS = ['product', 'technical', 'tasks', 'apply', 'verify', 'archive'];
+const SKILLS = [...COMMANDS, 'learn'];
 
 const TOOLS = {
   claude: {
@@ -97,10 +98,21 @@ export async function init(targetPath, toolIds) {
       process.exit(1);
     }
   }
+  toolIds = [...new Set(toolIds.filter(Boolean))];
+
+  const validToolIds = toolIds.filter((id) => TOOLS[id]);
+  if (validToolIds.length === 0) {
+    console.log('smooth init — setting up project development harness\n');
+    for (const toolId of toolIds) {
+      console.log(`  ✗ Unknown tool: ${toolId} (available: ${Object.keys(TOOLS).join(', ')})`);
+    }
+    console.error('\nNo valid AI tools were initialized.');
+    process.exit(1);
+  }
 
   console.log('smooth init — setting up project development harness\n');
-
   mkdirSync(join(targetPath, 'smooth'), { recursive: true });
+  initMemory(targetPath);
 
   let initializedTools = 0;
   for (const toolId of toolIds) {
@@ -122,9 +134,11 @@ export async function init(targetPath, toolIds) {
       const cmdFileName = tool.commandFileName ? tool.commandFileName(cmd) : `smooth-${cmd}.md`;
       const cmdDest = join(commandsDir, cmdFileName);
       writeFileSync(cmdDest, tool.formatCommand('', cmdTemplate).trimStart());
+    }
 
-      // Skills (skip if tool doesn't support them)
-      if (!tool.noSkills && skillsDir) {
+    // Skills (skip if tool doesn't support them)
+    if (!tool.noSkills && skillsDir) {
+      for (const cmd of SKILLS) {
         const skillTemplate = readFileSync(join(TEMPLATES_DIR, 'skills', `${cmd}.md`), 'utf-8');
         const skillDest = tool.skillPath(skillsDir, cmd);
         mkdirSync(dirname(skillDest), { recursive: true });
@@ -132,7 +146,7 @@ export async function init(targetPath, toolIds) {
       }
     }
 
-    const skillCount = tool.noSkills ? 0 : COMMANDS.length;
+    const skillCount = tool.noSkills ? 0 : SKILLS.length;
     const parts = [`${COMMANDS.length} commands`];
     if (skillCount > 0) parts.push(`${skillCount} skills`);
     console.log(`  ✓ ${tool.name}: ${parts.join(' + ')}`);
@@ -152,7 +166,47 @@ export async function init(targetPath, toolIds) {
   console.log('  /smooth:apply                  — implement tasks');
   console.log('  /smooth:verify                 — verify and record evidence');
   console.log('  /smooth:archive                — archive completed change\n');
+  console.log('Conversation memory is available through the smooth-learn skill when supported.\n');
   console.log('Harness checks are run from /smooth:verify when available. Advanced: smooth check <name>\n');
+}
+
+function initMemory(targetPath) {
+  const memoryDir = join(targetPath, 'smooth', 'memory');
+  const domainsDir = join(memoryDir, 'domains');
+  mkdirSync(domainsDir, { recursive: true });
+
+  writeIfMissing(join(memoryDir, 'user.md'), `# User Memory
+
+Durable preferences and collaboration patterns learned from day-to-day conversations.
+
+## Preferences
+- _Add durable preferences here._
+
+## Response Style
+- _Add response style guidance here._
+
+## Standing Cautions
+- _Add standing cautions here._
+`);
+
+  writeIfMissing(join(memoryDir, 'pitfalls.md'), `# Conversation Pitfalls
+
+Recurring issues from daily conversations and analysis sessions.
+
+## Open Pitfalls
+- _Add recurring conversation pitfalls here._
+`);
+
+  writeIfMissing(join(domainsDir, 'README.md'), `# Domain Playbooks
+
+One file per recurring domain or analysis type, such as stocks, hiring, product strategy, or architecture review.
+`);
+}
+
+function writeIfMissing(path, content) {
+  if (!existsSync(path)) {
+    writeFileSync(path, content);
+  }
 }
 
 function wrapCursorRule(content) {

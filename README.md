@@ -13,6 +13,8 @@ A local-first project development harness for AI coding assistants. Smooth helps
 
 Smooth is a **project development harness**, not just a prompt pack. It defines a set of phases (product → technical → tasks → apply → verify → archive) and keeps durable artifacts for the work: requirements, design, tasks, workpad, verification evidence, pitfalls, and lessons.
 
+Smooth also keeps lightweight conversation memory for day-to-day analysis that is not tied to a code change. A stock analysis preference, research checklist, response style correction, or recurring conversation pitfall can become durable memory and improve future answers.
+
 After initialization, your AI assistant gets slash commands that shape how it thinks and works. Most harness behavior is embedded in the flow: the assistant updates the workpad while discussing, records verification evidence while checking, and captures pitfalls/lessons when they happen.
 
 ## What Smooth does
@@ -26,6 +28,11 @@ Smooth gives an AI-assisted project a lightweight control loop:
 5. **Learn from mistakes** — capture real pitfalls and reusable lessons, then promote repeatable lessons into better generation rules, document rules, workflow guardrails, project checks, config defaults, or tool capabilities.
 
 The goal is not to make the user run more commands. The goal is to make the assistant develop inside a harness that quietly records what matters and checks what can be checked by code.
+
+Smooth has two modes:
+
+- **Change mode** — for requirements, implementation, verification, and archive.
+- **Conversation / analysis mode** — for durable user preferences, recurring analysis playbooks, and daily conversation pitfalls.
 
 ## See it in action
 
@@ -80,6 +87,8 @@ npx @pureforge/smooth check <change-name>
 
 `smooth check` reads `smooth.config.json` when present. Without config, it prefers a project-level `make verify` target; if none exists, it auto-detects package scripts named `lint`, `typecheck`, `test`, and `build`.
 
+Conversation memory is usually agent-initiated through the `smooth-learn` skill. The user should not have to remember a command; the assistant decides when a correction, preference, analysis framework, or recurring pitfall is durable enough to record.
+
 ## Philosophy
 
 Each phase is a **stance with durable artifacts** — you're having a conversation with your AI assistant while it simultaneously captures decisions, progress, verification evidence, and learning.
@@ -112,6 +121,14 @@ pitfall → lesson → harness improvement
 
 If a mistake can be caught by code, command, lint, or script, Smooth should help turn it into a check. If it is about how code or documents are generated, Smooth should help turn it into a stronger template, rule, or workflow guardrail instead of leaving it as a one-off reminder.
 
+The same loop applies to daily conversation:
+
+```text
+conversation pitfall → user/domain lesson → response or analysis improvement
+```
+
+For example, if the user repeatedly asks for stock analysis, Smooth can keep a domain playbook that says to separate facts from inference, verify current prices/news before answering, include bear cases, and avoid unsupported buy/sell language.
+
 ## Project Structure
 
 After `smooth init`, your project gets:
@@ -142,6 +159,11 @@ your-project/
     │   ├── verify.md
     │   ├── pitfalls.md
     │   └── lessons.md
+    ├── memory/
+    │   ├── user.md          # Long-lived user preferences and response style
+    │   ├── pitfalls.md      # Recurring conversation pitfalls
+    │   └── domains/
+    │       └── README.md    # Domain playbooks, e.g. stocks.md
     └── archive/             # Completed changes
 ```
 

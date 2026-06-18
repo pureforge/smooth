@@ -30,7 +30,7 @@ switch (command) {
   case 'init': {
     const { flags, positional } = parseArgs(args.slice(1));
     const targetPath = resolve(positional[0] || '.');
-    const toolIds = flags.tool ? flags.tool.split(',').map((t) => t.trim()) : null;
+    const toolIds = flags.tool ? flags.tool.split(',').map((t) => t.trim()).filter(Boolean) : null;
     await init(targetPath, toolIds);
     break;
   }
@@ -97,6 +97,9 @@ After init, use slash commands in your AI assistant:
   /smooth:apply       Implement code step by step from tasks.md
   /smooth:verify      Verify implementation and record evidence
   /smooth:archive     Archive completed changes
+
+Conversation memory:
+  smooth-learn skill   Agent-initiated memory updates when supported
 
 Advanced harness runner:
   smooth check [name] [--no-record]     Run project checks and record evidence

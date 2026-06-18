@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { closeSync, mkdtempSync, openSync } from 'fs';
+import { closeSync, existsSync, mkdtempSync, openSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
 import { spawnSync } from 'child_process';
-import { detectTools } from './init.js';
+import { detectTools, init } from './init.js';
 
 test('detectTools recognizes Cursor legacy .cursorrules file', () => {
   const root = mkdtempSync(join(tmpdir(), 'smooth-init-'));
@@ -22,4 +22,33 @@ test('init exits non-zero when no valid tool is provided', () => {
 
   assert.notEqual(proc.status, 0);
   assert.match(proc.stderr, /No valid AI tools were initialized/);
+  assert.equal(existsSync(join(root, 'smooth')), false);
 });
+
+test('init creates conversation memory and learn skill without adding a learn command', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'smooth-init-'));
+
+  await captureLog(() => init(root, ['claude']));
+
+  assert.ok(existsSync(join(root, 'smooth', 'memory', 'user.md')));
+  assert.ok(existsSync(join(root, 'smooth', 'memory', 'pitfalls.md')));
+  assert.ok(existsSync(join(root, 'smooth', 'memory', 'domains', 'README.md')));
+  assert.equal(existsSync(join(root, '.claude', 'commands', 'smooth', 'learn.md')), false);
+  assert.ok(existsSync(join(root, '.claude', 'skills', 'smooth-learn', 'SKILL.md')));
+
+  const userMemory = readFileSync(join(root, 'smooth', 'memory', 'user.md'), 'utf-8');
+  assert.match(userMemory, /User Memory/);
+});
+
+async function captureLog(fn) {
+  const originalLog = console.log;
+  const originalError = console.error;
+  console.log = () => {};
+  console.error = () => {};
+  try {
+    return await fn();
+  } finally {
+    console.log = originalLog;
+    console.error = originalError;
+  }
+}
