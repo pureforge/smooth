@@ -5,8 +5,8 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEMPLATES_DIR = join(__dirname, '..', 'templates');
 
-const COMMANDS = ['product', 'technical', 'tasks', 'apply', 'verify', 'archive'];
-const SKILLS = [...COMMANDS, 'learn'];
+const COMMANDS = ['product', 'technical', 'tasks', 'apply', 'verify', 'archive', 'learn'];
+const SKILLS = COMMANDS;
 
 const TOOLS = {
   claude: {
@@ -166,7 +166,8 @@ export async function init(targetPath, toolIds) {
   console.log('  /smooth:apply                  — implement tasks');
   console.log('  /smooth:verify                 — verify and record evidence');
   console.log('  /smooth:archive                — archive completed change\n');
-  console.log('Conversation memory is available through the smooth-learn skill when supported.\n');
+  console.log('  /smooth:learn                  — manual fallback for conversation memory\n');
+  console.log('Conversation memory is usually agent-initiated through the smooth-learn skill.\n');
   console.log('Harness checks are run from /smooth:verify when available. Advanced: smooth check <name>\n');
 }
 

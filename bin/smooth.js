@@ -97,6 +97,7 @@ After init, use slash commands in your AI assistant:
   /smooth:apply       Implement code step by step from tasks.md
   /smooth:verify      Verify implementation and record evidence
   /smooth:archive     Archive completed changes
+  /smooth:learn       Manual fallback to update conversation memory
 
 Conversation memory:
   smooth-learn skill   Agent-initiated memory updates when supported

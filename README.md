@@ -78,6 +78,7 @@ In normal use, start with `/smooth:product` and let the assistant suggest or inv
 | `/smooth:apply` | Implement code step by step from tasks.md |
 | `/smooth:verify` | Verify implementation, record evidence, and capture pitfalls/lessons |
 | `/smooth:archive` | Archive completed changes |
+| `/smooth:learn` | Manual fallback to update memory or domain playbooks |
 
 The harness runner is available, but usually invoked by `/smooth:verify` rather than by the user:
 
@@ -87,7 +88,7 @@ npx @pureforge/smooth check <change-name>
 
 `smooth check` reads `smooth.config.json` when present. Without config, it prefers a project-level `make verify` target; if none exists, it auto-detects package scripts named `lint`, `typecheck`, `test`, and `build`.
 
-Conversation memory is usually agent-initiated through the `smooth-learn` skill. The user should not have to remember a command; the assistant decides when a correction, preference, analysis framework, or recurring pitfall is durable enough to record.
+Conversation memory is usually agent-initiated through the `smooth-learn` skill. The user should not have to remember a command; the assistant decides when a correction, preference, analysis framework, or recurring pitfall is durable enough to record. `/smooth:learn` remains available as a manual fallback when the user explicitly wants to force a memory update.
 
 ## Philosophy
 

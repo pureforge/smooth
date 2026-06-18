@@ -25,7 +25,7 @@ test('init exits non-zero when no valid tool is provided', () => {
   assert.equal(existsSync(join(root, 'smooth')), false);
 });
 
-test('init creates conversation memory and learn skill without adding a learn command', async () => {
+test('init creates conversation memory plus learn command and skill', async () => {
   const root = mkdtempSync(join(tmpdir(), 'smooth-init-'));
 
   await captureLog(() => init(root, ['claude']));
@@ -33,7 +33,7 @@ test('init creates conversation memory and learn skill without adding a learn co
   assert.ok(existsSync(join(root, 'smooth', 'memory', 'user.md')));
   assert.ok(existsSync(join(root, 'smooth', 'memory', 'pitfalls.md')));
   assert.ok(existsSync(join(root, 'smooth', 'memory', 'domains', 'README.md')));
-  assert.equal(existsSync(join(root, '.claude', 'commands', 'smooth', 'learn.md')), false);
+  assert.ok(existsSync(join(root, '.claude', 'commands', 'smooth', 'learn.md')));
   assert.ok(existsSync(join(root, '.claude', 'skills', 'smooth-learn', 'SKILL.md')));
 
   const userMemory = readFileSync(join(root, 'smooth', 'memory', 'user.md'), 'utf-8');
