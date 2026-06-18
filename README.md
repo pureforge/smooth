@@ -13,7 +13,7 @@ A local-first project development harness for AI coding assistants. Smooth helps
 
 Smooth is a **project development harness**, not just a prompt pack. It defines a set of phases (product → technical → tasks → apply → verify → archive) and keeps durable artifacts for the work: requirements, design, tasks, workpad, verification evidence, pitfalls, and lessons.
 
-Smooth also keeps lightweight conversation memory for day-to-day analysis that is not tied to a code change. A stock analysis preference, research checklist, response style correction, or recurring conversation pitfall can become durable memory and improve future answers.
+Smooth also keeps lightweight conversation memory for day-to-day analysis that is not tied to a code change. A stock analysis preference, research checklist, response style correction, user rebuttal, or recurring conversation pitfall can become durable memory and improve future answers.
 
 After initialization, your AI assistant gets slash commands that shape how it thinks and works. Most harness behavior is embedded in the flow: the assistant updates the workpad while discussing, records verification evidence while checking, and captures pitfalls/lessons when they happen.
 
@@ -88,7 +88,7 @@ npx @pureforge/smooth check <change-name>
 
 `smooth check` reads `smooth.config.json` when present. Without config, it prefers a project-level `make verify` target; if none exists, it auto-detects package scripts named `lint`, `typecheck`, `test`, and `build`.
 
-Conversation memory is usually agent-initiated through the `smooth-learn` skill. The user should not have to remember a command; the assistant decides when a correction, preference, analysis framework, or recurring pitfall is durable enough to record. `/smooth:learn` remains available as a manual fallback when the user explicitly wants to force a memory update.
+Conversation memory is usually agent-initiated through the `smooth-learn` skill. The user should not have to remember a command; the assistant decides when a correction, user rebuttal, preference, analysis framework, or recurring pitfall is durable enough to record. Rebuttals are high-signal, but not all of them should become memory: Smooth records them only when they expose a reusable preference, recurring failure mode, likely-to-repeat wrong assumption, or harness improvement. For recorded rebuttals, Smooth asks the assistant to identify the wrong assumption behind its earlier answer and convert that into a future response, analysis, workflow, template, or tool improvement. `/smooth:learn` remains available as a manual fallback when the user explicitly wants to force a memory update.
 
 ## Philosophy
 
@@ -130,6 +130,8 @@ conversation pitfall → user/domain lesson → response or analysis improvement
 
 For example, if the user repeatedly asks for stock analysis, Smooth can keep a domain playbook that says to separate facts from inference, verify current prices/news before answering, include bear cases, and avoid unsupported buy/sell language.
 
+If the user pushes back on the assistant's framing, Smooth treats that as stronger signal than a casual preference, but still applies judgment before writing memory. When the pushback is durable, memory should capture the rebuttal, the assistant's wrong assumption, and the future rule that prevents repeating the same mistake.
+
 ## Project Structure
 
 After `smooth init`, your project gets:
@@ -143,14 +145,16 @@ your-project/
 │   │   ├── tasks.md
 │   │   ├── apply.md
 │   │   ├── verify.md
-│   │   └── archive.md
+│   │   ├── archive.md
+│   │   └── learn.md
 │   └── skills/              # Agent skills
 │       ├── smooth-product/SKILL.md
 │       ├── smooth-technical/SKILL.md
 │       ├── smooth-tasks/SKILL.md
 │       ├── smooth-apply/SKILL.md
 │       ├── smooth-verify/SKILL.md
-│       └── smooth-archive/SKILL.md
+│       ├── smooth-archive/SKILL.md
+│       └── smooth-learn/SKILL.md
 └── smooth/                  # Change artifacts live here
     ├── <change-name>/
     │   ├── product.md

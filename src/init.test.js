@@ -38,6 +38,7 @@ test('init creates conversation memory plus learn command and skill', async () =
 
   const userMemory = readFileSync(join(root, 'smooth', 'memory', 'user.md'), 'utf-8');
   assert.match(userMemory, /User Memory/);
+  assert.match(userMemory, /Corrections and Rebuttals/);
 });
 
 async function captureLog(fn) {

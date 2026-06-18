@@ -186,6 +186,9 @@ Durable preferences and collaboration patterns learned from day-to-day conversat
 ## Response Style
 - _Add response style guidance here._
 
+## Corrections and Rebuttals
+- _Record recurring user rebuttals and the assistant assumption that was wrong._
+
 ## Standing Cautions
 - _Add standing cautions here._
 `);

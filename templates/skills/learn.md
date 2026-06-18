@@ -9,12 +9,13 @@ metadata:
 Update Smooth memory from the current conversation. This is usually agent-initiated: decide whether the conversation contains durable learning instead of waiting for the user to run a command.
 
 Use this when the conversation reveals durable collaboration knowledge, even if there is no code change or product requirement. Examples:
+- The user rebuts or corrects the assistant's framing, assumption, or conclusion
 - The user corrects how analysis should be structured
 - The user states a reusable preference
 - A recurring pitfall appears in daily conversation
 - A domain playbook should be refined, such as stocks, hiring, product strategy, or architecture review
 
-Do not record everything. Only capture information likely to improve future work.
+Do not record everything. Treat user rebuttals and corrections as high-signal, but not automatically durable. Capture only the pattern that should change future behavior.
 
 **Input**: Optionally use a memory topic if the user explicitly names one (e.g., `stocks`, `response-style`). Otherwise infer the topic from the conversation.
 
@@ -40,8 +41,17 @@ Do not record everything. Only capture information likely to improve future work
    Record facts as concise, reusable guidance. Separate:
    - **Preference** — how the user wants future collaboration to behave
    - **Playbook** — a reusable analysis structure or domain checklist
+   - **Correction / rebuttal** — what the user pushed back on, what assumption was wrong, and what should change next time
    - **Pitfall** — a mistake pattern that should be avoided
    - **Harness improvement** — a candidate rule, template change, source policy, or tool capability
+
+   When the user rebuts or corrects the assistant, first decide whether it is worth recording. Record it only if it reveals a reusable preference, a repeated failure mode, a wrong assumption likely to recur, or a gap in response quality, analysis structure, workflow, templates, checks, or tool capability. If it is one-off, local to the current answer, or already covered by memory, fix the current response without writing memory.
+
+   For rebuttals worth recording, do not just store the corrected answer. Analyze:
+   - What did the assistant assume?
+   - Why was that assumption too narrow, stale, tool-centric, command-heavy, or otherwise wrong?
+   - What future signal should make the assistant behave differently?
+   - Should the fix become a response rule, analysis playbook rule, workflow rule, template update, check, or tool capability?
 
    Prefer this structure for domain files:
 
@@ -59,6 +69,11 @@ Do not record everything. Only capture information likely to improve future work
 
    ## Pitfalls
    - <recurring mistake and prevention>
+
+   ## Corrections and Rebuttals
+   - User rebuttal: <what the user rejected or corrected>
+   - Wrong assumption: <what the assistant assumed>
+   - Future rule: <how to respond differently next time>
 
    ## Harness Improvements
    - Type: response-style | analysis-framework | source-policy | workflow-rule | tool-capability | guidance-update
