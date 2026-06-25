@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
-import { formatStatus } from './graph.js';
+import { formatStatus, getNext } from './graph.js';
 
 function fixture() {
   const change = mkdtempSync(join(tmpdir(), 'smooth-graph-'));
@@ -41,4 +41,14 @@ test('formatStatus shows research as optional before product exists', () => {
 
   assert.match(status, /research（前置调研）/);
   assert.match(status, /下一步：\/smooth:product/);
+});
+
+test('getNext skips optional research and returns product first', () => {
+  const change = mkdtempSync(join(tmpdir(), 'smooth-graph-'));
+  mkdirSync(change, { recursive: true });
+  writeFileSync(join(change, 'research.md'), '# 前置调研\n');
+
+  const next = getNext(change);
+
+  assert.equal(next?.id, 'product');
 });

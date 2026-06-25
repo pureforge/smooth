@@ -37,19 +37,27 @@ export function discoverChanges(smoothDir) {
 
   for (const name of topLevel) {
     const dir = join(smoothDir, name);
+    const sub = readdirSync(dir).filter((s) => isDir(join(dir, s)));
+    const subChanges = [];
+    for (const s of sub) {
+      const subDir = join(dir, s);
+      if (hasChangeMarker(subDir)) {
+        subChanges.push({ id: `${name}/${s}`, dir: subDir });
+      }
+    }
 
-    if (hasChangeMarker(dir)) {
+    if (existsSync(join(dir, 'product.md'))) {
       changes.push({ id: name, dir });
       continue;
     }
 
-    // No change marker here — treat as a container of phases.
-    const sub = readdirSync(dir).filter((s) => isDir(join(dir, s)));
-    for (const s of sub) {
-      const subDir = join(dir, s);
-      if (hasChangeMarker(subDir)) {
-        changes.push({ id: `${name}/${s}`, dir: subDir });
-      }
+    if (subChanges.length > 0) {
+      changes.push(...subChanges);
+      continue;
+    }
+
+    if (existsSync(join(dir, 'research.md'))) {
+      changes.push({ id: name, dir });
     }
   }
 

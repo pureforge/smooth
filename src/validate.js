@@ -145,5 +145,5 @@ function hasLessonContent(content) {
     .join('\n');
 
   if (!body) return false;
-  return !/no notable (pitfalls?|lessons?)/i.test(body);
+  return !/no notable (pitfalls?|lessons?)|没有(明显|可复用|值得记录)(的)?(踩坑|经验)|无(明显|可复用|值得记录)?(踩坑|经验)/i.test(body);
 }

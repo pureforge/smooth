@@ -75,6 +75,18 @@ No notable lessons.
   assert.equal(warnings.some((w) => w.includes('lessons.md')), false);
 });
 
+test('validate allows explicit Chinese no notable lessons note', () => {
+  const change = fixture();
+  writeFileSync(join(change, 'lessons.md'), `# 经验沉淀
+
+没有明显经验。
+`);
+
+  const { warnings } = validateChange(change, 'foo');
+
+  assert.equal(warnings.some((w) => w.includes('lessons.md')), false);
+});
+
 test('validate allows research-only change before product is written', () => {
   const root = mkdtempSync(join(tmpdir(), 'smooth-validate-'));
   const change = join(root, 'smooth', 'foo');

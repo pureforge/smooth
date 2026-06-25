@@ -61,7 +61,9 @@ export function resolveGraph(changeDir, schema = DEFAULT_SCHEMA) {
  */
 export function getNext(changeDir, schema = DEFAULT_SCHEMA) {
   const graph = resolveGraph(changeDir, schema);
-  return graph.find((a) => a.status === 'ready') || null;
+  return graph.find((a) => a.status === 'ready' && !a.optional)
+    || graph.find((a) => a.status === 'ready')
+    || null;
 }
 
 /**
