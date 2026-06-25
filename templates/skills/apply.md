@@ -1,109 +1,118 @@
 ---
 name: smooth-apply
-description: "Implement code step by step from tasks.md. Use when the user wants to start implementing, continue implementation, or work through tasks."
+description: "按 tasks.md 逐步实现代码。用户想开始实现、继续实现或推进任务时使用。"
 metadata:
   author: smooth
   version: "1.0"
 ---
 
-Implement tasks from a change.
+实现某个变更里的任务。
 
-**Input**: Optionally specify a change name (e.g., `/smooth:apply tracking-events-v2`). If omitted, infer from conversation context. If ambiguous, ask.
+**默认语言：除命令、文件名、代码标识、引用原文外，面向用户的回复和生成的 Smooth 文档都用简体中文。**
 
-**Steps**
+**输入**：可以指定变更名，例如 `/smooth:apply tracking-events-v2`。如果省略，就从对话上下文推断；如果不明确，先问用户。
 
-1. **Select the change**
+---
 
-   If a name is provided, use it. Otherwise:
-   - Infer from conversation context if the user mentioned a change
-   - Auto-select if only one active change exists
-   - If ambiguous, list available changes and ask
+## 步骤
 
-   Always announce: "Using change: <name>"
+1. **选择变更**
 
-2. **Read all context**
+   如果提供了名称，就使用它。否则：
+   - 从对话上下文推断
+   - 如果只有一个活跃变更，自动选择
+   - 如果不明确，列出可用变更并询问
 
-   Read every artifact in the change directory:
-   - `product.md` — what we're building
-   - `technical.md` — how to build it (if exists)
-   - `tasks.md` — what to implement
-   - `workpad.md` — current plan, acceptance criteria, validation notes, and confusions (if exists)
+   始终说明：`使用变更：<name>`
 
-   **IMPORTANT**: Read ALL available artifacts before starting. The design decisions are your implementation guide.
+2. **读取完整上下文**
 
-3. **Show current progress**
+   读取变更目录里的所有产物：
+   - `product.md`：要构建什么
+   - `technical.md`：如何构建（如果存在）
+   - `tasks.md`：要实现什么
+   - `workpad.md`：当前计划、验收标准、验证想法和疑问（如果存在）
 
-   Display:
-   - Progress: "N/M tasks complete"
-   - Remaining tasks overview
-   - Which task is next
+   **重要：开始前必须读取所有可用产物。** 技术设计和任务清单是实现依据。
 
-4. **Implement tasks (loop until done or blocked)**
+3. **展示当前进度**
 
-   For each pending task:
-   - Show which task is being worked on
-   - Make the code changes required
-   - Keep changes minimal and focused on the task
-   - Mark task complete in tasks.md: `- [ ]` → `- [x]`
-   - Update workpad.md when progress, blockers, validation ideas, or confusions change
-   - Continue to next task
+   展示：
+   - 进度：`N/M 个任务已完成`
+   - 剩余任务概览
+   - 下一步要做哪个任务
 
-   **Pause if:**
-   - Task is unclear → ask for clarification
-   - Implementation reveals a design issue → suggest updating artifacts
-   - Error or blocker encountered → report and wait for guidance
-   - User interrupts
+4. **实现任务（循环直到完成或阻塞）**
 
-5. **On completion or pause, show status**
+   对每个未完成任务：
+   - 说明正在做哪个任务
+   - 做必要代码修改
+   - 保持改动最小、聚焦当前任务
+   - 完成后立即在 `tasks.md` 里把 `- [ ]` 改成 `- [x]`
+   - 进度、阻塞、验证想法或疑问变化时更新 `workpad.md`
+   - 继续下一个任务
 
-   Display:
-   - Tasks completed this session
-   - Overall progress: "N/M tasks complete"
-   - If all done: assess whether verification is needed and suggest next step:
-     - **Needs verification** (UI changes, user-facing behavior, multi-module integration, complex logic) → "Implementation complete. This change has user-facing behavior worth verifying. (`/smooth:verify`)"
-     - **Light verification is enough** (pure refactor, internal logic with good test coverage, config changes) → "Implementation complete. This looks low risk; run a light verification pass to record evidence. (`/smooth:verify`)"
-   - If paused: explain why and wait for guidance
+   **遇到以下情况暂停：**
+   - 任务不清楚 → 询问澄清
+   - 实现暴露设计问题 → 建议更新相关产物
+   - 出现错误或阻塞 → 报告并等待指导
+   - 用户打断
 
-**Output During Implementation**
+5. **完成或暂停时展示状态**
 
-```
-## Implementing: <change-name>
+   展示：
+   - 本轮完成了哪些任务
+   - 总体进度：`N/M 个任务已完成`
+   - 如果全部完成，判断验证强度并建议下一步：
+     - **需要验证**：UI、用户可见行为、多模块集成、复杂逻辑 → “实现完成。这个变更有用户可见行为，建议验证并记录证据。（`/smooth:verify`）”
+     - **轻量验证即可**：纯重构、内部逻辑且测试覆盖足够、配置变更 → “实现完成。风险较低，建议做轻量验证并记录证据。（`/smooth:verify`）”
+   - 如果暂停，说明原因并等待用户指导
 
-Working on task 3/7: <task description>
-[...implementation happening...]
-✓ Task complete
+---
 
-Working on task 4/7: <task description>
-[...implementation happening...]
-✓ Task complete
-```
+## 实现中输出示例
 
-**Output On Completion**
+```markdown
+## 正在实现：<change-name>
 
-```
-## Implementation Complete
+正在处理任务 3/7：<任务说明>
+...
+✓ 任务完成
 
-**Change:** <change-name>
-**Progress:** 7/7 tasks complete ✓
-
-All tasks complete! Run `/smooth:verify` to record verification evidence before archiving.
+正在处理任务 4/7：<任务说明>
+...
+✓ 任务完成
 ```
 
-**Output On Pause**
+## 完成时输出示例
 
-```
-## Implementation Paused
+```markdown
+## 实现完成
 
-**Change:** <change-name>
-**Progress:** 4/7 tasks complete
+**变更：** <change-name>
+**进度：** 7/7 个任务已完成 ✓
 
-### Issue Encountered
-<description of the issue>
-
-What would you like to do?
+所有任务都完成了。归档前请运行 `/smooth:verify` 记录验证证据。
 ```
 
-**Guardrails**
-- Read ALL context files before starting, and follow the project's existing patterns (read CLAUDE.md)
-- Keep code changes minimal and scoped to the current task; mark its checkbox `- [x]` immediately on completion
-- Don't guess — pause and ask on ambiguity, errors, blockers, or when implementation reveals a design issue (then update the relevant artifact/workpad)
+## 暂停时输出示例
+
+```markdown
+## 实现暂停
+
+**变更：** <change-name>
+**进度：** 4/7 个任务已完成
+
+### 遇到的问题
+<问题说明>
+
+接下来要怎么处理？
+```
+
+---
+
+## 守则
+
+- 开始前读取所有上下文文件，并遵循项目现有模式。
+- 代码修改必须最小化并限定在当前任务范围内；任务完成后立即勾选 `- [x]`。
+- 不要猜。遇到歧义、错误、阻塞或设计问题时先暂停，并更新相关产物或 `workpad.md`。

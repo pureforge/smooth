@@ -14,6 +14,7 @@ import { join } from 'path';
 const DEFAULT_SCHEMA = {
   id: 'harness',
   artifacts: [
+    { id: 'research',  file: 'research.md',  required: false, optional: true, deps: [],          command: '/smooth:research' },
     { id: 'product',   file: 'product.md',   required: true,  deps: [],          command: '/smooth:product' },
     { id: 'workpad',   file: 'workpad.md',   required: false, deps: ['product'], command: '/smooth:product' },
     { id: 'technical', file: 'technical.md', required: false, deps: ['product'], command: '/smooth:technical' },
@@ -103,31 +104,36 @@ export function formatStatus(changeDir, schema = DEFAULT_SCHEMA) {
   const lines = [];
 
   for (const node of graph) {
+    if (node.id === 'research' && node.status !== 'done' && graph.some((a) => a.id === 'product' && a.status === 'done')) {
+      continue;
+    }
     const icon = node.status === 'done' ? '✓' : node.status === 'ready' ? '○' : '·';
     let suffix = '';
     if (node.status === 'blocked') {
-      suffix = ` (blocked by: ${node.blockedBy.join(', ')})`;
+      suffix = `（被 ${node.blockedBy.join(', ')} 阻塞）`;
+    } else if (node.optional) {
+      suffix = '（可选）';
     }
-    lines.push(`  ${icon} ${node.id}${suffix}`);
+    lines.push(`  ${icon} ${formatArtifactLabel(node.id)}${suffix}`);
   }
 
   const next = chooseNextAction(graph, changeDir);
   if (next) {
     lines.push('');
-    lines.push(`  Next: ${next.command}`);
+    lines.push(`  下一步：${next.command}`);
   }
 
   const ready = isReadyForApply(changeDir, schema);
   if (ready) {
     const progress = getTaskProgress(changeDir);
     if (progress && progress.remaining > 0) {
-      lines.push(`  Ready for apply (${progress.done}/${progress.total} tasks done)`);
+      lines.push(`  可以开始实现（${progress.done}/${progress.total} 个任务已完成）`);
     } else if (progress && progress.remaining === 0) {
       const verify = graph.find((a) => a.id === 'verify');
       if (verify?.status === 'done') {
-        lines.push('  All tasks complete — ready to archive');
+        lines.push('  所有任务已完成 — 可以归档');
       } else {
-        lines.push('  All tasks complete — ready to verify');
+        lines.push('  所有任务已完成 — 可以验证');
       }
     }
   }
@@ -153,6 +159,20 @@ function chooseNextAction(graph, changeDir) {
   if (!done('verify')) return byId.get('verify');
 
   return null;
+}
+
+function formatArtifactLabel(id) {
+  const labels = {
+    research: 'research（前置调研）',
+    product: 'product（产品需求）',
+    workpad: 'workpad（工作台）',
+    technical: 'technical（技术设计）',
+    tasks: 'tasks（任务）',
+    verify: 'verify（验证）',
+    pitfalls: 'pitfalls（踩坑）',
+    lessons: 'lessons（经验）',
+  };
+  return labels[id] || id;
 }
 
 export { DEFAULT_SCHEMA };

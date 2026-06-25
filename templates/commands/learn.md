@@ -1,103 +1,105 @@
 ---
 name: "Smooth: Learn"
-description: "Manual fallback for updating durable conversation memory"
+description: "更新持久化的对话记忆"
 category: Workflow
 tags: [workflow, memory, learning]
 ---
 
-Update Smooth memory from the current conversation.
+从当前对话更新 Smooth 记忆。
 
-This command is a fallback. The assistant should normally decide on its own whether a conversation contains durable learning and use the `smooth-learn` skill when supported. Use `/smooth:learn` when the user explicitly wants to force a memory update, summarize a preference, or refine a domain playbook.
+这是一条兜底命令。助手通常应当自己判断一段对话里是否有值得沉淀的内容，并在支持时使用 `smooth-learn` skill。只有当用户明确想强制更新记忆、总结偏好或细化领域玩法时，才使用 `/smooth:learn`。
 
-Examples:
-- The user rebuts or corrects the assistant's framing, assumption, or conclusion
-- The user says a correction should apply in future
-- The user wants to save a recurring analysis framework
-- The assistant missed a repeated preference and the user asks to remember it
-- A domain playbook should be refined, such as stocks, hiring, product strategy, or architecture review
+**默认语言：除命令、文件名、代码标识、引用原文外，面向用户的回复和生成的 Smooth 文档都用简体中文。**
 
-Do not record everything. Treat user rebuttals and corrections as high-signal, but not automatically durable. Capture only the pattern that should change future behavior.
+示例：
+- 用户反驳或纠正了助手的表述、假设或结论
+- 用户说某个纠正以后都应该生效
+- 用户想保存一个可复用的分析框架
+- 用户重复强调了某个偏好，但前面没有被记住
+- 需要细化某个领域的玩法，比如股票、招聘、产品策略或架构评审
 
-**Input**: Optionally specify a memory topic (e.g., `/smooth:learn stocks`, `/smooth:learn response-style`). If omitted, infer the topic from the conversation.
+**不要记录所有内容。** 用户反驳和纠正是高信号，但不一定都值得长期保存。只记录那些会改变未来行为的模式。
+
+**输入**：可以指定记忆主题，例如 `/smooth:learn stocks`、`/smooth:learn response-style`。如果省略，就从对话中推断主题。
 
 ---
 
-## What You Do
+## 你要做什么
 
-1. **Classify the memory**
+1. **分类记忆**
 
-   Decide which memory target should be updated:
-   - `smooth/memory/user.md` — durable user preferences, response style, standing cautions
-   - `smooth/memory/domains/<topic>.md` — recurring domain or analysis playbook
-   - `smooth/memory/pitfalls.md` — recurring conversation pitfalls and how to prevent them
+   决定更新哪类记忆：
+   - `smooth/memory/user.md`：长期用户偏好、表达风格、稳定提醒
+   - `smooth/memory/domains/<topic>.md`：某个领域的可复用分析玩法
+   - `smooth/memory/pitfalls.md`：反复出现的对话坑和预防方式
 
-   If the memory is sensitive, personal, or ambiguous, ask before writing it down.
+   如果内容敏感、个人化或有歧义，先问清楚再写。
 
-2. **Read existing memory first**
+2. **先读已有记忆**
 
-   Read the target file if it exists. Also read `smooth/memory/user.md` when updating a domain playbook, because user-level preferences override domain defaults.
+   如果目标文件已存在，先读它。更新领域玩法时也要读 `smooth/memory/user.md`，因为用户级偏好优先于领域默认。
 
-3. **Write only durable learning**
+3. **只写值得长期保留的内容**
 
-   Record facts as concise, reusable guidance. Separate:
-   - **Preference** — how the user wants future collaboration to behave
-   - **Playbook** — a reusable analysis structure or domain checklist
-   - **Correction / rebuttal** — what the user pushed back on, what assumption was wrong, and what should change next time
-   - **Pitfall** — a mistake pattern that should be avoided
-   - **Harness improvement** — a candidate rule, template change, source policy, or tool capability
+   记忆要短、可复用，并区分：
+   - **偏好**：用户希望未来如何协作
+   - **玩法**：可复用的分析结构或领域检查清单
+   - **纠正 / 反驳**：用户反对了什么、哪里假设错了、下次要怎么变
+   - **踩坑**：应该避免的错误模式
+   - **Harness 改进**：候选规则、模板改动、来源策略或工具能力
 
-   When the user rebuts or corrects the assistant, first decide whether it is worth recording. Record it only if it reveals a reusable preference, a repeated failure mode, a wrong assumption likely to recur, or a gap in response quality, analysis structure, workflow, templates, checks, or tool capability. If it is one-off, local to the current answer, or already covered by memory, fix the current response without writing memory.
+   遇到用户反驳或纠正时，先判断是否值得记录。只有当它暴露了可复用偏好、重复失败模式、可能再次出现的错误假设，或对回答质量、分析结构、工作流、模板、检查、工具能力有帮助时，才写入记忆。一次性的、只影响当前回答的、或已经被记住的内容，直接修正当前回答，不写记忆。
 
-   For rebuttals worth recording, do not just store the corrected answer. Analyze:
-   - What did the assistant assume?
-   - Why was that assumption too narrow, stale, tool-centric, command-heavy, or otherwise wrong?
-   - What future signal should make the assistant behave differently?
-   - Should the fix become a response rule, analysis playbook rule, workflow rule, template update, check, or tool capability?
+   对于值得记录的反驳，不要只存“正确答案”。要分析：
+   - 助手当时假设了什么？
+   - 为什么这个假设太窄、过时、过于工具化、过于命令化，或者就是错的？
+   - 什么未来信号应该让助手换一种反应？
+   - 应该把修正落成响应规则、分析玩法规则、工作流规则、模板更新、检查还是工具能力？
 
-   Prefer this structure for domain files:
+   领域文件推荐结构：
 
    ```markdown
-   # <Domain> Playbook
+   # <领域> 玩法
 
-   ## User Preferences
-   - <durable preference for this domain>
+   ## 用户偏好
+   - <这个领域下用户长期稳定的偏好>
 
-   ## Required Analysis Shape
-   - <sections or sequence the user expects>
+   ## 必要分析形状
+   - <用户希望的章节顺序或分析步骤>
 
-   ## Source Policy
-   - <when to browse, cite, verify freshness, or distinguish fact/inference/opinion>
+   ## 来源策略
+   - <何时需要浏览、引用、验证新鲜度，或区分事实 / 推断 / 观点>
 
-   ## Pitfalls
-   - <recurring mistake and prevention>
+   ## 踩坑
+   - <反复出现的错误模式和预防方式>
 
-   ## Corrections and Rebuttals
-   - User rebuttal: <what the user rejected or corrected>
-   - Wrong assumption: <what the assistant assumed>
-   - Future rule: <how to respond differently next time>
+   ## 纠正与反驳
+   - 用户反驳：<用户拒绝或纠正了什么>
+   - 错误假设：<助手当时假设了什么>
+   - 未来规则：<下次如何不同地回应>
 
-   ## Harness Improvements
-   - Type: response-style | analysis-framework | source-policy | workflow-rule | tool-capability | guidance-update
-   - Target: <memory/template/check/tool/doc to improve>
-   - Idea: <specific improvement>
+   ## Harness 改进
+   - 类型：response-style | analysis-framework | source-policy | workflow-rule | tool-capability | guidance-update
+   - 目标：<要改进的记忆 / 模板 / 检查 / 工具 / 文档>
+   - 想法：<具体怎么改>
    ```
 
-4. **Preserve signal**
+4. **保留信号**
 
-   Keep memory short. Merge with existing entries instead of appending duplicates. Remove stale wording only when the conversation clearly supersedes it.
+   记忆要短。优先合并已有条目，不要重复堆积。只有当新对话明确推翻旧说法时，才删除旧表述。
 
-5. **Report what changed**
+5. **报告变更**
 
-   Summarize:
-   - Memory file updated
-   - New or changed preferences/playbook rules
-   - Any candidate harness improvements
+   简要说明：
+   - 更新了哪个记忆文件
+   - 新增或变更了哪些偏好 / 玩法规则
+   - 有哪些候选 harness 改进
 
 ---
 
-## Guardrails
+## 守则
 
-- **Do not overfit** — one casual wording preference is not a durable rule unless the user corrects or emphasizes it.
-- **Do not store secrets** — never record credentials, private identifiers, or sensitive personal data.
-- **Separate facts from preferences** — especially in research, finance, legal, medical, or other high-stakes analysis.
-- **Fresh data still needs verification** — memory can shape analysis, but it cannot replace current sources when facts may have changed.
+- **不要过拟合**：一次普通措辞偏好，不等于长期规则；只有当用户反复纠正或明显强调时，才记下来。
+- **不要存秘密**：绝对不要记录凭据、私人标识或敏感信息。
+- **区分事实和偏好**：尤其是在研究、金融、法律、医疗等高风险场景。
+- **新鲜数据仍需验证**：记忆可以影响分析方式，但不能替代可能已经变化的当前来源。

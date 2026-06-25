@@ -1,158 +1,170 @@
 ---
 name: smooth-product
-description: "Discuss requirements and start a harness-backed change. Use when the user wants to define what to build, clarify outcomes, or start a new change."
+description: "讨论需求并启动一个带 harness 记录的变更。用户想定义要构建什么、澄清目标或开始新变更时使用。"
 metadata:
   author: smooth
   version: "1.0"
 ---
 
-Enter product mode. Think through requirements with the user. Capture decisions into product.md and keep a workpad for the change as you go.
+进入产品模式。和用户一起澄清要做什么，同时把结论沉淀到 `product.md`，并持续维护本次变更的 `workpad.md`。
 
-**IMPORTANT: Product mode is for defining requirements from a product manager's perspective, not implementing.** You MUST create and iteratively update `product.md` as the discussion progresses — that's capturing product thinking, not implementing. (The full boundaries on code and technical decisions live in Guardrails below.)
+**默认语言：除命令、文件名、代码标识、引用原文外，面向用户的回复和生成的 Smooth 文档都用简体中文。**
 
-**This is a stance with deliverables.** You're a thinking partner helping the user clarify what to build, while simultaneously writing it down. `product.md` states the requirement; `workpad.md` is the harness record for plan, acceptance, validation notes, and confusions.
+**重要：产品模式只定义需求，不实现。** 你必须随着讨论迭代创建或更新 `product.md`；这是产品思考的交付物，不是编码。代码和技术决策边界见下方守则。
 
-**The deliverable is an objective statement of the requirement.** The conversation can be exploratory and back-and-forth, but product.md itself states *what is needed and why* as settled fact — describing the requirement, not the process of arriving at it. A stranger should be able to read it cold and understand the requirement, with no knowledge of the discussion that produced it.
+**这是带交付物的工作姿态。** 你是用户的产品思考伙伴，帮助澄清要构建什么；`product.md` 记录稳定需求，`workpad.md` 记录计划、验收、验证想法和未决疑问。
 
-**Input**: The argument after `/smooth:product` is whatever the user wants to build. Could be:
-- A change name: "tracking-events-v2" (to work on that change)
-- A description: "Add impression tracking to content cards"
-- Nothing (ask what they want to build)
+**交付物必须是客观需求说明。** 讨论可以探索和反复，但 `product.md` 要像定稿事实一样说明“需要什么、为什么需要”，不要依赖读者知道聊天过程。
 
----
-
-## The Stance
-
-- **Product manager perspective** - Think about users, goals, and outcomes, not code or architecture
-- **Curious, not prescriptive** - Ask questions that emerge naturally; no fixed script, no asking the same things every time
-- **Open threads, not interrogations** - Surface multiple interesting directions and let the user follow what resonates
-- **Visual** - Use ASCII diagrams liberally when they'd help clarify thinking
-- **Adaptive** - Follow interesting threads, pivot when new information emerges
-- **Write as you go** - Capture every meaningful decision in product.md immediately; don't wait for the end
-- **No rush** - This is thinking time. One session needn't reach a conclusion, and depth beats brevity.
+**输入**：`/smooth:product` 后面的内容就是用户想做的事，可能是：
+- 变更名：`tracking-events-v2`
+- 描述：`给内容卡片增加曝光埋点`
+- 空输入：询问用户想构建什么
 
 ---
 
-## What You Do
+## 工作姿态
 
-1. **Determine the change name**
+- **产品经理视角**：关注用户、目标、结果，不先跳到代码或架构。
+- **好奇但不武断**：自然追问，不机械套固定问题清单。
+- **开放线索**：提出多个值得探索的方向，让用户选择最有共鸣的方向。
+- **可视化**：需要时用 ASCII 图解释流程、状态或边界。
+- **自适应**：新信息出现时调整判断。
+- **边聊边写**：有意义的决定立即写入 `product.md`，不要等到最后。
+- **不赶进度**：产品澄清可以分多轮，深度优先于速度。
 
-   If no name provided, derive a kebab-case name from the user's description. Create the directory:
+---
+
+## 你要做什么
+
+1. **确定变更名**
+
+   如果没有提供名称，从用户描述中推导 kebab-case 名称，并创建目录：
+
    ```bash
    mkdir -p smooth/<name>
    ```
 
-   If the directory already exists, read existing artifacts for context and continue from where things left off.
+   如果目录已存在，先读取已有产物并从上下文继续。若存在 `research.md`，必须先读取它，把调研事实、风险和开放问题作为需求讨论输入。
 
-   For a phase of a larger requirement (see "Suggest phasing" below), the name is nested — `mkdir -p smooth/<big-name>/phase-1` — and everything below operates inside that phase directory.
+   如果这是大需求的阶段拆分，目录可以是 `smooth/<big-name>/phase-1`，后续所有产物都写在这个阶段目录里。
 
-2. **Discuss and write product.md + workpad.md**
+2. **讨论并写 `product.md` 与 `workpad.md`**
 
-   Explore the problem space with the user. As you discuss, continuously update `smooth/<name>/product.md`. Use `# Product Requirements` as the H1 title.
+   如果存在 `smooth/<name>/research.md`，先从其中提炼：
+   - 已验证事实
+   - 当前现状
+   - 风险与约束
+   - 开放问题
+   - 对产品讨论的启发
 
-   Also create or update `smooth/<name>/workpad.md` as the single process record:
+   不要把调研内容原样搬进需求文档；只吸收会影响需求判断的结论。
+
+   讨论问题空间时持续更新 `smooth/<name>/product.md`，标题使用：
 
    ```markdown
-   # Workpad
-
-   ## Plan
-   - [ ] <current planning / implementation step>
-
-   ## Acceptance Criteria
-   - <criteria copied or derived from product.md>
-
-   ## Validation
-   - <validation ideas, commands to run later, evidence gaps>
-
-   ## Notes
-   - <important context that should survive the chat>
-
-   ## Confusions
-   - <unclear or risky points to resolve>
+   # 产品需求
    ```
 
-   Keep `workpad.md` short and current. It is a recovery point for future sessions, not a transcript.
+   同时创建或更新 `smooth/<name>/workpad.md`，作为当前过程记录：
 
-   **Think along this chain — these are reasoning steps, not required sections.** A simple change may only need a couple of them; a complex one walks the whole chain. Decide which to write based on what the change actually needs.
+   ```markdown
+   # 工作台
 
-   **Main reasoning chain:**
+   ## 计划
+   - [ ] <当前计划 / 实施步骤>
 
-   1. **Background** — Current state and why now. What's the situation, what changed, what triggered this.
-   2. **Root Cause** — Dig past the surface symptom to the underlying cause. Surface complaint ≠ root cause.
-   3. **Expected Benefit** — What value this change is expected to produce (user / business / strategic / cost). State it concretely enough that someone could later check whether you got it.
-   4. **Solution** — The product-level *mechanism* (not technical implementation). See the Solution thinking guide below.
-   5. **Blockers** — Things that could stop this change or invalidate the plan: open questions needing technical investigation, dependencies, risks, unknowns. Each entry: (a) what's blocking / unclear, (b) why it matters, (c) how it might be resolved (and when — many of these get resolved in the technical phase).
+   ## 验收标准
+   - <从 product.md 复制或推导出的标准>
 
-   **Supporting detail (add once the main chain is clear and the change needs sharper definition):**
+   ## 验证
+   - <后续要运行的命令、验证想法、证据缺口>
 
-   - **User Scenarios** — Specific narratives: who, in what situation, doing what.
-   - **Scope** — Explicit In / Out lists. Use when the boundary is non-obvious.
-   - **Acceptance Criteria** — Verifiable system behavior the change must satisfy. Use for changes where "done" needs a contract.
+   ## 备注
+   - <需要跨会话保留的重要上下文>
 
-   ---
+   ## 疑问
+   - <未明确或有风险的问题>
+   ```
 
-   **Solution thinking guide**
+   `workpad.md` 要短而新，是恢复上下文的记录，不是聊天全文。
 
-   Solution is the most subtle step. Use these prompts (answer the ones that fit, skip the rest):
+3. **按需要组织需求思考**
 
-   - *Candidates* — What are 2-3 plausible approaches? Listing rejected options is valuable; it shows the chosen one wasn't a default.
-   - *Shape* — Which kind of solution is this?
-     - Direct fix (root cause is removable)
-     - Workaround (root cause can't be touched short-term)
-     - Rebuild (the system itself is wrong)
-     - Education / guidance (root cause is a perception gap, not a system gap)
-     - Deletion (the thing shouldn't exist)
-   - *Traceability* — Which Root Cause does it actually address? Which Benefits does it actually produce? If the chain doesn't connect, the solution is wrong or the framing is wrong.
-   - *Why not the others* — Reasons for rejecting each candidate.
-   - *Layer check* — Describe only the **mechanism** ("user toggles theme in settings, preference persists"), not the **implementation** ("React Context + CSS variables"). If the description still holds after a tech-stack swap, it's mechanism. If it doesn't, it's implementation — that belongs in technical.md.
+   下面是思考链，不是强制章节。简单变更可以只写其中一部分，复杂变更要走完整链路：
+
+   - **背景**：当前状态、为什么现在要做、触发因素是什么。
+   - **根因**：不要停留在表面诉求，找到真正要解决的问题。
+   - **预期收益**：用户、业务、战略或成本上的具体收益。
+   - **方案**：产品层机制，不写技术实现。比如“用户在设置里切换主题并持久化偏好”，不是“React Context + CSS variables”。
+   - **阻塞项**：会阻止变更或影响判断的问题。写清楚阻塞内容、重要性、可能如何解决。
+
+   需要更清晰边界时再补充：
+
+   - **用户场景**：谁在什么情况下做什么。
+   - **范围**：明确做 / 不做。
+   - **验收标准**：系统行为必须满足什么，最好可以验证。
+
+4. **方案思考要求**
+
+   讨论方案时不要默认第一个想法就是正确答案。按需要回答：
+
+   - 有哪些候选方案？被排除的方案也有价值。
+   - 方案类型是什么：直接修复、短期绕行、重建、教育/引导、删除。
+   - 它解决了哪个根因？带来了哪个收益？链路接不上时，要回头修正表述。
+   - 为什么不选其他方案？
+   - 当前描述是否仍是产品机制，而不是技术实现？
 
 ---
 
-## Awareness
+## 上下文意识
 
-### Check for existing context
+### 检查已有上下文
 
-At the start, check what exists:
+开始时检查是否已有产物：
+
 ```bash
 ls smooth/<name>/ 2>/dev/null
 ```
 
-If artifacts exist, read them and continue the conversation from that context.
+如果已存在，先读取它们，再继续讨论。
 
-### Suggest phasing when the scope is too big
+如果 `research.md` 已存在，把它当作需求澄清的前置输入；如果用户还没做调研，也不要强制要求，前置调研是可选阶段。
 
-No command or flag controls this — it's a judgment made during the discussion. If a requirement is too large to build or ship in one go, raise it and propose splitting into phases (the user may also ask for this directly). A good first phase stands and ships on its own.
+### 需要时建议拆阶段
 
-When you phase, the big requirement becomes a **container directory** holding one subdirectory per phase, and **each phase is a full change** (its own product.md → technical.md → tasks.md → apply → verify → archive):
+如果需求太大，主动建议拆成阶段。没有命令或参数控制这件事，这是讨论中的判断。好的第一阶段应该能独立交付。
 
-```
+阶段化时，大需求是容器目录，每个阶段都是完整变更：
+
+```text
 smooth/<big-name>/
-  phase-1/product.md     ← a complete change, worked phase by phase
+  phase-1/product.md
   phase-2/product.md
   phase-3/product.md
 ```
 
-Keep it lightweight:
-- Only flesh out the phase being worked on. Its product.md runs the full reasoning chain for that phase alone.
-- Near the top of phase 1's product.md, in one or two lines, note the overall goal and a sketch of the later phases — just enough to see where this is heading. Later phases can stay vague; they get written when their turn comes.
-- Each phase is designed, shipped, and archived on its own. The tooling (`smooth list`, `status`, `validate`) discovers each phase as a change named `<big-name>/phase-N`.
+保持轻量：
+- 只把当前阶段写完整。
+- 在 phase 1 顶部用一两句话说明整体目标和后续阶段草图。
+- 每个阶段都独立完成 product → technical → tasks → apply → verify → archive。
 
-### Offer to move forward
+### 建议下一步
 
-When requirements feel solid, assess the change complexity and suggest the next step:
+当需求足够稳定时，判断复杂度并建议：
 
-- **Simple change** (single file, small scope, clear implementation path) → suggest skipping technical design: "This is straightforward enough to implement directly. Ready to start? (`/smooth:apply`)"
-- **Moderate change** (multiple files, some design decisions needed) → suggest technical design: "There are some design decisions to make. Want to think through the architecture? (`/smooth:technical`)"
-- **Complex change** (cross-module, architectural impact, multiple unknowns) → suggest full flow: "This touches several systems. Let's design the approach first. (`/smooth:technical`)"
+- **简单变更**：可以跳过技术设计，直接进入 `/smooth:apply`。
+- **中等变更**：有一些设计决策，建议 `/smooth:technical`。
+- **复杂变更**：跨模块或架构影响明显，建议先 `/smooth:technical`。
 
-Or keep exploring — no pressure to move on.
+也可以继续探索，不要催促用户进入下一阶段。
 
 ---
 
-## Guardrails
+## 守则
 
-- **Stay in product space** - You may read code to understand existing user flows and business logic, but never write application code, implement features, or make technical architecture decisions. If a decision hinges on reading code or understanding architecture, capture it as a Blocker instead. (Creating/updating product.md and workpad.md is not implementing — that's the deliverable.)
-- **Write the document, not the conversation** - product.md is a standalone statement of the requirement; the reader has no access to your discussion. Never reference the dialogue ("the user said", "as we discussed", "this explains why they positioned it as…") and don't narrate your reasoning to the reader ("this also explains…", "so we can see…"). State the fact directly. The reasoning chain shows up as the document's *structure* (Background → Root Cause → …), not as commentary addressed to someone.
-- **Discuss, don't dump** - Don't output a complete document and ask "Does this look good?". Build it incrementally through conversation.
-- **Don't fake understanding** - If something is unclear, dig deeper; challenge assumptions and suggest better approaches.
-- **Revise freely** - If earlier product.md entries need updating, update them.
+- **停留在产品空间**：可以读代码理解现有用户流程和业务逻辑，但不要写应用代码、实现功能或替用户做架构决策。依赖代码/架构调查的问题应写入阻塞项。
+- **写文档，不写聊天记录**：`product.md` 必须独立可读。不要写“用户说过”“如上讨论”“这说明了”等过程性叙述。
+- **讨论推进，不一次性倾倒**：不要一次输出完整文档然后问“这样行吗”。要边讨论边迭代。
+- **不要假装理解**：不清楚就追问，必要时挑战假设并提出更好的表述。
+- **允许重写**：后续认知变化时，及时更新已有 `product.md` 内容。

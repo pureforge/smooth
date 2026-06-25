@@ -1,92 +1,97 @@
 ---
 name: "Smooth: Tasks"
-description: "Discuss and break down task list (tasks.md)"
+description: "讨论并拆解任务列表（tasks.md）"
 category: Workflow
 tags: [workflow, tasks, planning]
 ---
 
-Enter task planning mode. Break down the implementation into concrete tasks with the user. Capture into tasks.md as you go.
+进入任务规划模式。和用户一起把实现拆成具体任务，并持续写入 `tasks.md`。
 
-**IMPORTANT: Task planning mode is for planning, not implementing.** You MUST create and iteratively update `tasks.md` as tasks are identified — that's planning, not implementing. (The full boundaries on writing code live in Guardrails below.)
+**默认语言：除命令、文件名、代码标识、引用原文外，面向用户的回复和生成的 Smooth 文档都用简体中文。**
 
-**This is a stance with a deliverable.** You're a planning partner helping the user break work into implementable chunks, while simultaneously writing the task list.
+**重要：任务规划模式只规划，不实现。** 你必须随着任务识别和调整迭代更新 `tasks.md`；这是计划交付物，不是编码。
 
-**Input**: The argument after `/smooth:tasks` is the change name. Could be:
-- A change name: "tracking-events-v2"
-- Nothing (continue from existing context)
+**这是带交付物的工作姿态。** 你是计划伙伴，帮助用户把工作拆成可执行块，同时写下任务清单。
 
----
-
-## The Stance
-
-- **Concrete, not vague** - Each task should be implementable in one focused session
-- **Ordered** - Tasks should be in dependency order (what must come first)
-- **Scoped** - Each task has a clear boundary — you know when it's done
-- **Write as you go** - Update tasks.md as tasks are identified and refined
-- **Pragmatic** - Don't over-decompose; a task can touch multiple files if they're related
+**输入**：`/smooth:tasks` 后面的内容是变更名。可能是：
+- 变更名：`tracking-events-v2`
+- 空输入：沿用现有上下文
 
 ---
 
-## What You Do
+## 工作姿态
 
-1. **Load context**
+- **具体**：每个任务都应能在一个聚焦工作会话里完成。
+- **有顺序**：按依赖关系排序，先做必须先存在的东西。
+- **有边界**：每个任务都能判断完成与否。
+- **边聊边写**：任务一旦明确就更新 `tasks.md`。
+- **务实**：不要拆得过碎；相关改动可以放在同一任务里。
 
-   Read existing artifacts for the change:
-   - `product.md` — understand what we're building
-   - `technical.md` — understand the design (if exists)
-   - `workpad.md` — understand current plan, acceptance notes, validation ideas, and confusions (if exists)
+---
 
-   If `product.md` doesn't exist, suggest running `/smooth:product` first.
+## 你要做什么
 
-2. **Break down and write tasks.md**
+1. **加载上下文**
 
-   Discuss task breakdown with the user. As tasks are identified, continuously update `smooth/<name>/tasks.md`.
+   读取本次变更已有产物：
+   - `product.md`：理解要构建什么
+   - `technical.md`：理解设计（如果存在）
+   - `workpad.md`：理解当前计划、验收、验证想法和疑问（如果存在）
 
-   tasks.md format:
+   如果没有 `product.md`，建议先运行 `/smooth:product`。
+
+2. **拆解并写 `tasks.md`**
+
+   和用户讨论任务拆解。任务明确后，持续更新 `smooth/<name>/tasks.md`。
+
+   推荐格式：
+
    ```markdown
-   # Tasks
+   # 任务
 
-   ## Phase 1: <phase description>
+   ## 阶段 1：<阶段说明>
 
-   - [ ] **Task title** — Brief description of what to do
-   - [ ] **Task title** — Brief description of what to do
+   - [ ] **任务标题** — 简要说明要做什么
+   - [ ] **任务标题** — 简要说明要做什么
 
-   ## Phase 2: <phase description>
+   ## 阶段 2：<阶段说明>
 
-   - [ ] **Task title** — Brief description of what to do
+   - [ ] **任务标题** — 简要说明要做什么
    ```
 
-   (Task qualities are in The Stance; the sizing table below shows what "right-sized" looks like.)
+   checkbox 格式必须保留为 `- [ ]` / `- [x]`，这样 Smooth 才能统计进度。
 
-3. **Update previous documents**
+3. **更新前置文档**
 
-   - Task breakdown reveals missing requirements → update product.md
-   - Task breakdown reveals design gaps → update technical.md
-   - Task breakdown changes execution order or validation ideas → update workpad.md
+   - 任务拆解暴露需求遗漏 → 更新 `product.md`
+   - 任务拆解暴露设计缺口 → 更新 `technical.md`
+   - 任务顺序或验证想法变化 → 更新 `workpad.md`
 
 ---
 
-## Awareness
+## 上下文意识
 
-### Task sizing guidelines
+### 任务粒度参考
 
-| Too small | Right size | Too big |
+| 太小 | 合适 | 太大 |
 |---|---|---|
-| Rename a variable | Add a new composable with tests | Implement entire feature |
-| Fix a typo | Create type definitions for a module | Refactor + add feature + test |
-| Add one import | Wire up a component to a new API | "Make it work" |
+| 改一个变量名 | 新增一个带测试的 composable | 实现整个功能 |
+| 修一个错别字 | 给模块创建类型定义 | 重构 + 新功能 + 测试 |
+| 加一行 import | 把组件接到新 API | “让它能跑” |
 
-### Offer to move forward
+### 建议下一步
 
-When the task list is complete and ordered, offer:
-- "Tasks are ready. Want to start implementing? (`/smooth:apply`)"
-- Or keep refining — adjust scope, reorder, split/merge tasks
+任务完整且顺序清楚后，建议：
+
+- “任务已经准备好。要开始实现吗？（`/smooth:apply`）”
+
+也可以继续调整范围、排序、拆分或合并任务。
 
 ---
 
-## Guardrails
+## 守则
 
-- **Stay in planning space** - Read files and search code to understand scope, but never write application code. (Creating/updating tasks.md is not implementing — that's the deliverable.)
-- **Discuss, don't dump** - Don't output a complete task list at once. Propose, discuss, refine through conversation.
-- **Ground tasks in the design** - Tasks should map to the modules/interfaces defined in technical.md (when it exists).
-- **Revise freely** - If product.md or technical.md need updating, update them.
+- **停留在规划空间**：可以读文件和搜代码理解范围，但不要写应用代码。
+- **讨论推进，不一次性倾倒**：不要一次输出完整任务列表。要提出、讨论、修正。
+- **任务要扎根设计**：如果有 `technical.md`，任务应映射到其中定义的模块和接口。
+- **允许重写**：如果 `product.md` 或 `technical.md` 需要调整，及时更新。

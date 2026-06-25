@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEMPLATES_DIR = join(__dirname, '..', 'templates');
 
-const COMMANDS = ['product', 'technical', 'tasks', 'apply', 'verify', 'archive', 'learn'];
+const COMMANDS = ['research', 'product', 'technical', 'tasks', 'apply', 'verify', 'archive', 'learn'];
 const SKILLS = COMMANDS;
 
 const TOOLS = {
@@ -89,12 +89,12 @@ export async function init(targetPath, toolIds) {
     const detected = detectTools(targetPath);
     if (detected.length > 0) {
       toolIds = detected;
-      console.log(`Detected: ${detected.map((id) => TOOLS[id].name).join(', ')}\n`);
+      console.log(`检测到：${detected.map((id) => TOOLS[id].name).join(', ')}\n`);
     } else {
       const available = Object.keys(TOOLS).join(', ');
-      console.error(`No AI tools detected and no --tool flag provided.\n`);
-      console.error(`Available tools: ${available}`);
-      console.error(`\nUsage: smooth init --tool claude,cursor,...`);
+      console.error(`没有检测到 AI 工具，也没有提供 --tool 参数。\n`);
+      console.error(`可用工具：${available}`);
+      console.error(`\n用法：smooth init --tool claude,cursor,...`);
       process.exit(1);
     }
   }
@@ -102,15 +102,15 @@ export async function init(targetPath, toolIds) {
 
   const validToolIds = toolIds.filter((id) => TOOLS[id]);
   if (validToolIds.length === 0) {
-    console.log('smooth init — setting up project development harness\n');
+    console.log('smooth init — 正在设置项目开发 harness\n');
     for (const toolId of toolIds) {
-      console.log(`  ✗ Unknown tool: ${toolId} (available: ${Object.keys(TOOLS).join(', ')})`);
+      console.log(`  ✗ 未知工具：${toolId}（可用：${Object.keys(TOOLS).join(', ')}）`);
     }
-    console.error('\nNo valid AI tools were initialized.');
+    console.error('\n没有初始化任何有效 AI 工具。');
     process.exit(1);
   }
 
-  console.log('smooth init — setting up project development harness\n');
+  console.log('smooth init — 正在设置项目开发 harness\n');
   mkdirSync(join(targetPath, 'smooth'), { recursive: true });
   initMemory(targetPath);
 
@@ -118,7 +118,7 @@ export async function init(targetPath, toolIds) {
   for (const toolId of toolIds) {
     const tool = TOOLS[toolId];
     if (!tool) {
-      console.log(`  ✗ Unknown tool: ${toolId} (available: ${Object.keys(TOOLS).join(', ')})`);
+      console.log(`  ✗ 未知工具：${toolId}（可用：${Object.keys(TOOLS).join(', ')}）`);
       continue;
     }
 
@@ -147,28 +147,29 @@ export async function init(targetPath, toolIds) {
     }
 
     const skillCount = tool.noSkills ? 0 : SKILLS.length;
-    const parts = [`${COMMANDS.length} commands`];
-    if (skillCount > 0) parts.push(`${skillCount} skills`);
+    const parts = [`${COMMANDS.length} 个命令`];
+    if (skillCount > 0) parts.push(`${skillCount} 个技能`);
     console.log(`  ✓ ${tool.name}: ${parts.join(' + ')}`);
     initializedTools++;
   }
 
   if (initializedTools === 0) {
-    console.error('\nNo valid AI tools were initialized.');
+    console.error('\n没有初始化任何有效 AI 工具。');
     process.exit(1);
   }
 
-  console.log(`\n  smooth/ — change artifacts and harness records\n`);
-  console.log('Getting started:');
-  console.log('  /smooth:product "your idea"    — define what to build');
-  console.log('  /smooth:technical              — design the architecture');
-  console.log('  /smooth:tasks                  — break into implementable tasks');
-  console.log('  /smooth:apply                  — implement tasks');
-  console.log('  /smooth:verify                 — verify and record evidence');
-  console.log('  /smooth:archive                — archive completed change\n');
-  console.log('  /smooth:learn                  — manual fallback for conversation memory\n');
-  console.log('Conversation memory is usually agent-initiated through the smooth-learn skill.\n');
-  console.log('Harness checks are run from /smooth:verify when available. Advanced: smooth check <name>\n');
+  console.log(`\n  smooth/ — 变更产物与 harness 记录\n`);
+  console.log('开始使用：');
+  console.log('  /smooth:research "你的主题"    — 可选前置调研');
+  console.log('  /smooth:product "你的想法"    — 定义要构建什么');
+  console.log('  /smooth:technical              — 设计架构');
+  console.log('  /smooth:tasks                  — 拆成可实现任务');
+  console.log('  /smooth:apply                  — 实现任务');
+  console.log('  /smooth:verify                 — 验证并记录证据');
+  console.log('  /smooth:archive                — 归档已完成变更\n');
+  console.log('  /smooth:learn                  — 对话记忆的手动兜底入口\n');
+  console.log('对话记忆通常由 smooth-learn 技能主动触发。\n');
+  console.log('Harness 检查通常由 /smooth:verify 调用。高级用法：smooth check <name>\n');
 }
 
 function initMemory(targetPath) {
@@ -176,34 +177,34 @@ function initMemory(targetPath) {
   const domainsDir = join(memoryDir, 'domains');
   mkdirSync(domainsDir, { recursive: true });
 
-  writeIfMissing(join(memoryDir, 'user.md'), `# User Memory
+  writeIfMissing(join(memoryDir, 'user.md'), `# 用户记忆
 
-Durable preferences and collaboration patterns learned from day-to-day conversations.
+从日常对话中沉淀的长期偏好和协作模式。
 
-## Preferences
-- _Add durable preferences here._
+## 偏好
+- _在这里添加长期偏好。_
 
-## Response Style
-- _Add response style guidance here._
+## 回复风格
+- _在这里添加回复风格指引。_
 
-## Corrections and Rebuttals
-- _Record recurring user rebuttals and the assistant assumption that was wrong._
+## 纠正与反驳
+- _记录反复出现、值得沉淀的用户反驳，以及助手当时错误的假设。_
 
-## Standing Cautions
-- _Add standing cautions here._
+## 长期提醒
+- _在这里添加长期需要注意的事项。_
 `);
 
-  writeIfMissing(join(memoryDir, 'pitfalls.md'), `# Conversation Pitfalls
+  writeIfMissing(join(memoryDir, 'pitfalls.md'), `# 对话踩坑记录
 
-Recurring issues from daily conversations and analysis sessions.
+日常对话和分析中反复出现的问题。
 
-## Open Pitfalls
-- _Add recurring conversation pitfalls here._
+## 待处理踩坑
+- _在这里添加反复出现的对话坑。_
 `);
 
-  writeIfMissing(join(domainsDir, 'README.md'), `# Domain Playbooks
+  writeIfMissing(join(domainsDir, 'README.md'), `# 领域玩法
 
-One file per recurring domain or analysis type, such as stocks, hiring, product strategy, or architecture review.
+每个常见领域或分析类型一个文件，例如 stocks、hiring、product-strategy、architecture-review。
 `);
 }
 

@@ -1,109 +1,114 @@
 ---
 name: "Smooth: Technical"
-description: "Discuss and create technical design (technical.md)"
+description: "讨论并创建技术设计（technical.md）"
 category: Workflow
 tags: [workflow, technical, design]
 ---
 
-Enter technical design mode. Design the implementation with the user. Capture decisions into technical.md as you go.
+进入技术设计模式。和用户一起设计实现方式，同时持续把决策写入 `technical.md`。
 
-**IMPORTANT: Technical mode is for designing and documenting architecture, not implementing.** You MUST create and iteratively update `technical.md` as design decisions are made — that's capturing design, not implementing. (The full boundaries on writing code live in Guardrails below.)
+**默认语言：除命令、文件名、代码标识、引用原文外，面向用户的回复和生成的 Smooth 文档都用简体中文。**
 
-**This is a stance with a deliverable.** You're a design partner helping the user figure out HOW to build it, while simultaneously documenting the architecture.
+**重要：技术模式只设计架构，不实现。** 你必须随着设计决策迭代创建或更新 `technical.md`；这是设计交付物，不是编码。
 
-**Input**: The argument after `/smooth:technical` is the change name. Could be:
-- A change name: "tracking-events-v2"
-- Nothing (continue from existing context)
+**这是带交付物的工作姿态。** 你是设计伙伴，帮助用户决定“怎么做”，同时把架构写清楚。
 
----
-
-## The Stance
-
-- **Architecture-first** - Draw the big picture before filling in details
-- **Code-aware** - Read existing code, design to match existing patterns
-- **Interface-first** - Define types and APIs before discussing implementation
-- **Visual** - Architecture diagrams, data flows, state machines
-- **Write as you go** - Capture every design decision in technical.md immediately; don't wait for the end
-- **Pragmatic** - Design for the actual problem, not hypothetical future needs
+**输入**：`/smooth:technical` 后面的内容是变更名。可能是：
+- 变更名：`tracking-events-v2`
+- 空输入：沿用现有上下文
 
 ---
 
-## What You Do
+## 工作姿态
 
-1. **Resolve Blockers from product.md**
-
-   Read `product.md` for the change. If `product.md` doesn't exist, suggest running `/smooth:product` first.
-   Also read `workpad.md` if it exists — it carries the current plan, acceptance notes, validation ideas, and confusions from earlier phases.
-
-   Check if `product.md` has a **Blockers** section. If it does:
-   - Read relevant code to investigate each blocker (feasibility, cost, existing patterns)
-   - Discuss findings with the user
-   - Once a blocker is resolved, update `product.md`: remove it from Blockers and fold the resolution into the relevant section (Solution, Expected Benefit, Scope, etc.), including the reason why this approach was chosen
-   - Repeat until all blockers are resolved or accepted as known risks
-
-   This step ensures the product requirements are finalized before designing the architecture. The final `product.md` should have no unresolved blockers.
-
-   If there are no Blockers, skip directly to step 2.
-
-2. **Design and write technical.md**
-
-   Based on the finalized `product.md`, explore the technical design with the user. Continuously update `smooth/<name>/technical.md`. Use `# Technical Design` as the H1 title.
-
-   **Organize by feature, not by artifact type.** Don't list "all files affected" then "all types" then "all functions" globally — that's horizontal slicing. Group everything for one feature together (its files, types, functions, decisions), so each feature block is self-contained and can be reviewed, discussed, or pulled into tasks.md as a unit.
-
-   technical.md should evolve to include:
-
-   - **Architecture Overview** — System diagram (ASCII art). Show the big picture and how features relate to each other.
-   - **Features** — Short list of the features this change contains. Acts as a table of contents for the per-feature sections below.
-   - **Cross-cutting Foundation** — Shared groundwork that multiple features depend on: shared types, utilities, infrastructure changes, cross-feature performance considerations. **Build this first** — features below stand on top of it. *Strict rule: only put things here that are genuinely shared by 2+ features. Anything serving a single feature belongs in that feature's section.*
-   - **Feature: `<name>`** — One section per feature, ordered by dependency (foundation-dependent ones later). Each feature section contains:
-     - *Files affected* — which files are new/modified/touched for this feature
-     - *Types / Interfaces* — TypeScript types and contracts this feature introduces
-     - *Functions / Methods* — new or modified functions and their signatures
-     - *Relationship to Existing Code* — what this feature reuses, replaces, or leaves alone
-     - *Design Decisions* — Q&A format: what was chosen and why, alternatives considered
-   - **Technical Acceptance Criteria** — What to verify from a technical perspective (performance thresholds, error handling, edge cases, backward compatibility). Can be grouped per-feature or kept cross-cutting, whichever is clearer.
-
-   **Why this order matters:** Architecture → Features list → Foundation → per-Feature sections roughly mirrors implementation order. Foundation gets built first; features build on it. When tasks.md reads this top-to-bottom, the task order falls out naturally.
-
-   ---
-
-   **When Design Decisions involves comparing multiple options**
-
-   Give the user a comparison, not just a conclusion. Don't pick silently.
-
-   *Reference dimensions* (a thinking checklist, not a required schema — use them to avoid blind spots):
-
-   - *Implementation cost* — effort, complexity, new concepts introduced
-   - *End result* — how well it solves the problem, output quality
-   - *Maintenance cost* — ongoing burden, debt, test complexity
-   - *Risk & reversibility* — what could go wrong, how hard to roll back
-
-   When you actually write the comparison, only list points that *matter for this decision*. If a dimension is the same across all candidates, drop it. If a candidate has a single decisive trait, one line is enough — don't pad to fill the table.
-
-   After the comparison, state: **the recommendation**, **which consideration weighed most this time** (not all dimensions are equally important per decision), and **what choosing this means giving up** (the accepted trade-off).
-
-3. **Update previous documents**
-
-   - Design reveals requirement issues → update product.md
-   - Design resolves or introduces uncertainty → update workpad.md Notes / Confusions
+- **先架构，再细节**：先画大图，再补局部。
+- **基于代码**：读现有代码，设计要贴合项目已有模式。
+- **先定义接口**：先定类型和 API，再谈实现细节。
+- **可视化**：用架构图、数据流图、状态图说明问题。
+- **边聊边写**：有意义的设计决定立即写进 `technical.md`。
+- **务实**：只设计真实问题，不为假设中的未来过度设计。
 
 ---
 
-## Awareness
+## 你要做什么
 
-### Offer to move forward
+1. **解决 product.md 里的阻塞项**
 
-When the design is clear enough to break into tasks, offer:
-- "Technical design looks solid. Ready to break it into tasks? (`/smooth:tasks`)"
-- Or keep refining — no pressure to move on
+   先读 `product.md`。如果没有，就先建议运行 `/smooth:product`。
+   如果有 `workpad.md` 也要一起读，因为它包含当前计划、验收、验证想法和疑问。
+
+   如果 `product.md` 有 **阻塞项**：
+   - 读相关代码调查可行性、成本和现有模式
+   - 和用户讨论发现
+   - 一旦解决，就更新 `product.md`：把阻塞项移除，并把结论吸收到对应章节里，说明为什么选择这个方案
+   - 重复直到所有阻塞项都解决或被接受为已知风险
+
+   这一步确保产品需求在设计前已经稳定。最终的 `product.md` 不应该还有未解决的阻塞项。
+
+2. **设计并写 `technical.md`**
+
+   基于已稳定的 `product.md`，和用户一起探索技术设计，持续更新 `smooth/<name>/technical.md`。标题使用：
+
+   ```markdown
+   # 技术设计
+   ```
+
+   **按功能组织，不要按文件类型横向切分。** 不要先列出所有文件、再列类型、再列函数；应该按一个功能一组来写，这样每一段都能独立审阅、讨论或拆进 tasks.md。
+
+   `technical.md` 建议包含：
+
+   - **架构总览**：ASCII 图说明系统如何连接。
+   - **功能列表**：本次变更有哪些功能，作为目录。
+   - **共享基础**：多个功能共享的类型、工具、基础设施、性能考虑。**这部分先做**，但只放真正跨两个以上功能的内容。
+   - **功能：`<name>`**：每个功能一节，按依赖顺序排列。每节包含：
+     - *涉及文件*
+     - *类型 / 接口*
+     - *函数 / 方法*
+     - *与现有代码的关系*
+     - *设计决策*：用问答式写清楚选择、原因、备选方案
+   - **技术验收标准**：从技术角度需要验证什么，比如性能、错误处理、边界情况、兼容性。
+
+   **为什么这个顺序重要：** 架构 → 功能列表 → 共享基础 → 各功能段，基本就是实现顺序。这样 tasks.md 按这个顺序读下去，任务自然就排出来了。
+
+3. **比较方案时给出对照**
+
+   如果设计决策有多个选项，不要直接静默拍板，要给用户一个对照：
+
+   - 实现成本
+   - 结果质量
+   - 维护成本
+   - 风险与可回滚性
+
+   只写真正影响决策的维度。某个选项如果只有一个决定性特点，一行就够，不要为了凑表格而填充。
+
+   最后要明确：
+   - **推荐方案**
+   - **这次最重要的考量**
+   - **选择它意味着放弃什么**
+
+4. **更新前置文档**
+
+   - 如果设计暴露需求问题，更新 `product.md`
+   - 如果设计引入或解决不确定性，更新 `workpad.md` 的备注或疑问
 
 ---
 
-## Guardrails
+## 上下文意识
 
-- **Stay in design space** - Read files and search code freely, but never write application code; every design claim should be grounded in actual codebase state. (Creating/updating technical.md is not implementing — that's the deliverable.)
-- **Discuss, don't dump** - Don't output a complete design doc at once. Design and write incrementally through conversation.
-- **Don't over-design** - Design for the actual problem; match existing project patterns rather than inventing new ones.
-- **Define interfaces** - TypeScript types are the contract between design and implementation.
-- **Revise freely** - If product.md needs updating as design reveals issues, update it.
+### 建议下一步
+
+当设计足够清晰、可以拆任务时，建议：
+
+- “技术设计已经比较清楚了。要拆成任务吗？（`/smooth:tasks`）”
+
+也可以继续打磨，不必急着前进。
+
+---
+
+## 守则
+
+- **停留在设计空间**：可以读文件和搜代码，但不要写应用代码；所有设计判断都要能从现有代码库里得到支撑。
+- **讨论推进，不一次性倾倒**：不要一次输出完整设计文档。要边设计边写。
+- **不要过度设计**：设计要贴合项目现有模式，而不是发明新抽象。
+- **先定义接口**：类型和接口是设计与实现之间的契约。
+- **允许重写**：如果产品层面需要调整，及时更新 `product.md`。

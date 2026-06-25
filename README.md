@@ -11,7 +11,7 @@ A local-first project development harness for AI coding assistants. Smooth helps
 
 ## What is this
 
-Smooth is a **project development harness**, not just a prompt pack. It defines a set of phases (product → technical → tasks → apply → verify → archive) and keeps durable artifacts for the work: requirements, design, tasks, workpad, verification evidence, pitfalls, and lessons.
+Smooth is a **project development harness**, not just a prompt pack. It defines a set of phases (optional research → product → technical → tasks → apply → verify → archive) and keeps durable artifacts for the work: research, requirements, design, tasks, workpad, verification evidence, pitfalls, and lessons.
 
 Smooth also keeps lightweight conversation memory for day-to-day analysis that is not tied to a code change. A stock analysis preference, research checklist, response style correction, user rebuttal, or recurring conversation pitfall can become durable memory and improve future answers.
 
@@ -21,11 +21,12 @@ After initialization, your AI assistant gets slash commands that shape how it th
 
 Smooth gives an AI-assisted project a lightweight control loop:
 
-1. **Clarify the requirement** — turn a vague idea into objective product requirements.
-2. **Keep process state** — preserve plan, acceptance criteria, validation ideas, notes, and confusions in `workpad.md`.
-3. **Guide implementation** — break the work into ordered tasks and let the assistant implement task by task.
-4. **Verify with evidence** — run project checks and record commands, outputs, and assertions in `verify.md`.
-5. **Learn from mistakes** — capture real pitfalls and reusable lessons, then promote repeatable lessons into better generation rules, document rules, workflow guardrails, project checks, config defaults, or tool capabilities.
+1. **Research when useful** — optionally collect facts, current state, risks, and open questions in `research.md` before requirements are finalized.
+2. **Clarify the requirement** — turn a vague idea into objective product requirements.
+3. **Keep process state** — preserve plan, acceptance criteria, validation ideas, notes, and confusions in `workpad.md`.
+4. **Guide implementation** — break the work into ordered tasks and let the assistant implement task by task.
+5. **Verify with evidence** — run project checks and record commands, outputs, and assertions in `verify.md`.
+6. **Learn from mistakes** — capture real pitfalls and reusable lessons, then promote repeatable lessons into better generation rules, document rules, workflow guardrails, project checks, config defaults, or tool capabilities.
 
 The goal is not to make the user run more commands. The goal is to make the assistant develop inside a harness that quietly records what matters and checks what can be checked by code.
 
@@ -72,6 +73,7 @@ In normal use, start with `/smooth:product` and let the assistant suggest or inv
 
 | Command | Purpose |
 |---------|---------|
+| `/smooth:research` | Optional pre-requirements research |
 | `/smooth:product` | Define product requirements (PM perspective) |
 | `/smooth:technical` | Resolve open questions, then design architecture |
 | `/smooth:tasks` | Break down into implementable task list |
@@ -94,6 +96,7 @@ Conversation memory is usually agent-initiated through the `smooth-learn` skill.
 
 Each phase is a **stance with durable artifacts** — you're having a conversation with your AI assistant while it simultaneously captures decisions, progress, verification evidence, and learning.
 
+- **Research** → Optionally collect facts, current state, risks, and open questions (research.md)
 - **Product** → Define what to build, list open questions (product.md)
 - **Technical** → Resolve open questions via code investigation, then design architecture (technical.md)
 - **Tasks** → Break into implementable chunks (tasks.md)
@@ -140,6 +143,7 @@ After `smooth init`, your project gets:
 your-project/
 ├── .claude/
 │   ├── commands/smooth/     # Slash commands
+│   │   ├── research.md
 │   │   ├── product.md
 │   │   ├── technical.md
 │   │   ├── tasks.md
@@ -148,6 +152,7 @@ your-project/
 │   │   ├── archive.md
 │   │   └── learn.md
 │   └── skills/              # Agent skills
+│       ├── smooth-research/SKILL.md
 │       ├── smooth-product/SKILL.md
 │       ├── smooth-technical/SKILL.md
 │       ├── smooth-tasks/SKILL.md
@@ -157,6 +162,7 @@ your-project/
 │       └── smooth-learn/SKILL.md
 └── smooth/                  # Change artifacts live here
     ├── <change-name>/
+    │   ├── research.md
     │   ├── product.md
     │   ├── workpad.md
     │   ├── technical.md

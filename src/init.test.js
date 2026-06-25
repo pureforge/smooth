@@ -21,11 +21,11 @@ test('init exits non-zero when no valid tool is provided', () => {
   });
 
   assert.notEqual(proc.status, 0);
-  assert.match(proc.stderr, /No valid AI tools were initialized/);
+  assert.match(proc.stderr, /没有初始化任何有效 AI 工具/);
   assert.equal(existsSync(join(root, 'smooth')), false);
 });
 
-test('init creates conversation memory plus learn command and skill', async () => {
+test('init creates conversation memory plus research and learn commands and skills', async () => {
   const root = mkdtempSync(join(tmpdir(), 'smooth-init-'));
 
   await captureLog(() => init(root, ['claude']));
@@ -33,12 +33,14 @@ test('init creates conversation memory plus learn command and skill', async () =
   assert.ok(existsSync(join(root, 'smooth', 'memory', 'user.md')));
   assert.ok(existsSync(join(root, 'smooth', 'memory', 'pitfalls.md')));
   assert.ok(existsSync(join(root, 'smooth', 'memory', 'domains', 'README.md')));
+  assert.ok(existsSync(join(root, '.claude', 'commands', 'smooth', 'research.md')));
   assert.ok(existsSync(join(root, '.claude', 'commands', 'smooth', 'learn.md')));
+  assert.ok(existsSync(join(root, '.claude', 'skills', 'smooth-research', 'SKILL.md')));
   assert.ok(existsSync(join(root, '.claude', 'skills', 'smooth-learn', 'SKILL.md')));
 
   const userMemory = readFileSync(join(root, 'smooth', 'memory', 'user.md'), 'utf-8');
-  assert.match(userMemory, /User Memory/);
-  assert.match(userMemory, /Corrections and Rebuttals/);
+  assert.match(userMemory, /用户记忆/);
+  assert.match(userMemory, /纠正与反驳/);
 });
 
 async function captureLog(fn) {

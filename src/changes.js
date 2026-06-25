@@ -1,7 +1,7 @@
 import { existsSync, readdirSync, statSync } from 'fs';
 import { join } from 'path';
 
-const PRODUCT = 'product.md';
+const CHANGE_MARKERS = ['product.md', 'research.md'];
 
 function isDir(p) {
   try {
@@ -15,12 +15,13 @@ function isDir(p) {
  * Discover all active changes under smooth/, supporting one level of
  * nesting for phased big requirements.
  *
- * A "change" is any directory that directly contains product.md:
+ * A "change" is any directory that directly contains product.md or research.md:
  *   smooth/foo/product.md           → change "foo"           (flat)
+ *   smooth/foo/research.md          → change "foo"           (pre-product research)
  *   smooth/big/phase-1/product.md   → change "big/phase-1"   (big is a container)
  *
- * A directory that has product.md is a change and is not descended into.
- * A directory without product.md is treated as a container, and its
+ * A directory that has a change marker is a change and is not descended into.
+ * A directory without a marker is treated as a container, and its
  * immediate subdirectories are scanned for changes. Nesting stops there.
  *
  * Returns [{ id, dir }] sorted by id, where id is the smooth-relative
@@ -37,16 +38,16 @@ export function discoverChanges(smoothDir) {
   for (const name of topLevel) {
     const dir = join(smoothDir, name);
 
-    if (existsSync(join(dir, PRODUCT))) {
+    if (hasChangeMarker(dir)) {
       changes.push({ id: name, dir });
       continue;
     }
 
-    // No product.md here — treat as a container of phases.
+    // No change marker here — treat as a container of phases.
     const sub = readdirSync(dir).filter((s) => isDir(join(dir, s)));
     for (const s of sub) {
       const subDir = join(dir, s);
-      if (existsSync(join(subDir, PRODUCT))) {
+      if (hasChangeMarker(subDir)) {
         changes.push({ id: `${name}/${s}`, dir: subDir });
       }
     }
@@ -61,4 +62,8 @@ export function discoverChanges(smoothDir) {
  */
 export function findChange(smoothDir, id) {
   return discoverChanges(smoothDir).find((c) => c.id === id) || null;
+}
+
+function hasChangeMarker(dir) {
+  return CHANGE_MARKERS.some((file) => existsSync(join(dir, file)));
 }

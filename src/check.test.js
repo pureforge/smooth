@@ -9,8 +9,8 @@ function fixture() {
   const root = mkdtempSync(join(tmpdir(), 'smooth-check-'));
   const change = join(root, 'smooth', 'foo');
   mkdirSync(change, { recursive: true });
-  writeFileSync(join(change, 'product.md'), '# Product Requirements\n\nBuild foo.\n');
-  writeFileSync(join(change, 'tasks.md'), '# Tasks\n\n- [x] Build foo\n');
+  writeFileSync(join(change, 'product.md'), '# 产品需求\n\n构建 foo。\n');
+  writeFileSync(join(change, 'tasks.md'), '# 任务\n\n- [x] 构建 foo\n');
   return root;
 }
 
@@ -25,7 +25,7 @@ test('check runs configured commands and records evidence', () => {
   });
 
   const verify = readFileSync(join(root, 'smooth', 'foo', 'verify.md'), 'utf-8');
-  assert.match(verify, /Automated Check Run/);
+  assert.match(verify, /自动化检查记录/);
   assert.match(verify, /\| ok \| pass \|/);
   assert.match(verify, /42/);
 });
@@ -61,7 +61,7 @@ test('check summarizes warnings separately from clean passes', () => {
     assert.equal(check(root, 'foo', { record: false }), true);
   });
 
-  assert.ok(lines.some((line) => line.includes('Checks passed with warnings.')));
+  assert.ok(lines.some((line) => line.includes('检查通过，但有提醒。')));
 });
 
 function captureLog(fn) {

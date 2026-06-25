@@ -9,8 +9,8 @@ function fixture() {
   const root = mkdtempSync(join(tmpdir(), 'smooth-validate-'));
   const change = join(root, 'smooth', 'foo');
   mkdirSync(change, { recursive: true });
-  writeFileSync(join(change, 'product.md'), '# Product Requirements\n\nBuild foo.\n');
-  writeFileSync(join(change, 'tasks.md'), '# Tasks\n\n- [x] Build foo\n');
+  writeFileSync(join(change, 'product.md'), '# 产品需求\n\n构建 foo。\n');
+  writeFileSync(join(change, 'tasks.md'), '# 任务\n\n- [x] 构建 foo\n');
   return change;
 }
 
@@ -46,7 +46,7 @@ test('validate accepts lessons with harness improvement target', () => {
   const { warnings } = validateChange(change, 'foo');
 
   assert.equal(warnings.some((w) => w.includes('Candidate check')), false);
-  assert.equal(warnings.some((w) => w.includes('no `Harness improvement`')), false);
+  assert.equal(warnings.some((w) => w.includes('缺少 `Harness improvement`')), false);
 });
 
 test('validate warns when lesson content has no harness improvement target', () => {
@@ -60,7 +60,7 @@ test('validate warns when lesson content has no harness improvement target', () 
 
   const { warnings } = validateChange(change, 'foo');
 
-  assert.ok(warnings.some((w) => w.includes('no `Harness improvement`')));
+  assert.ok(warnings.some((w) => w.includes('缺少 `Harness improvement`')));
 });
 
 test('validate allows explicit no notable lessons note', () => {
@@ -73,4 +73,16 @@ No notable lessons.
   const { warnings } = validateChange(change, 'foo');
 
   assert.equal(warnings.some((w) => w.includes('lessons.md')), false);
+});
+
+test('validate allows research-only change before product is written', () => {
+  const root = mkdtempSync(join(tmpdir(), 'smooth-validate-'));
+  const change = join(root, 'smooth', 'foo');
+  mkdirSync(change, { recursive: true });
+  writeFileSync(join(change, 'research.md'), '# 前置调研\n\n已验证事实。\n');
+
+  const { errors, warnings } = validateChange(change, 'foo');
+
+  assert.equal(errors.length, 0);
+  assert.ok(warnings.some((w) => w.includes('还没有 product.md')));
 });

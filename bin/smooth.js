@@ -71,38 +71,39 @@ switch (command) {
   }
 
   default: {
-    console.error(`smooth: unknown command "${command}"\n`);
+    console.error(`smooth: 未知命令 "${command}"\n`);
     printHelp();
     process.exit(1);
   }
 }
 
 function printHelp() {
-  console.log(`smooth — project development harness
+  console.log(`smooth — 项目开发 harness
 
-Usage:
-  smooth init [path] [--tool <tools>]   Initialize smooth in a project
-  smooth list                           List active changes
-  smooth status [name]                  Show artifact graph state
-  smooth validate [name]                Check change structure
+用法：
+  smooth init [path] [--tool <tools>]   初始化项目中的 smooth
+  smooth list                           列出活跃变更
+  smooth status [name]                  查看产物图状态
+  smooth validate [name]                检查变更结构
 
-Options:
-  --tool <tools>   Comma-separated: ${getAvailableTools().join(', ')}
-                   Default: claude
+选项：
+  --tool <tools>   逗号分隔：${getAvailableTools().join(', ')}
+                   默认：claude
 
-After init, use slash commands in your AI assistant:
-  /smooth:product     Discuss and write product requirements
-  /smooth:technical   Discuss and create technical design
-  /smooth:tasks       Discuss and break down task list
-  /smooth:apply       Implement code step by step from tasks.md
-  /smooth:verify      Verify implementation and record evidence
-  /smooth:archive     Archive completed changes
-  /smooth:learn       Manual fallback to update conversation memory
+初始化后，可在 AI 助手里使用这些斜杠命令：
+  /smooth:research    可选前置调研
+  /smooth:product     讨论并写产品需求
+  /smooth:technical   讨论并写技术设计
+  /smooth:tasks       讨论并拆任务
+  /smooth:apply       按 tasks.md 逐步实现
+  /smooth:verify      验证实现并记录证据
+  /smooth:archive     归档已完成变更
+  /smooth:learn       对话记忆的手动兜底入口
 
-Conversation memory:
-  smooth-learn skill   Agent-initiated memory updates when supported
+对话记忆：
+  smooth-learn 技能     在支持时由助手主动更新记忆
 
-Advanced harness runner:
-  smooth check [name] [--no-record]     Run project checks and record evidence
+高级 harness 运行器：
+  smooth check [name] [--no-record]     运行项目检查并记录证据
 `);
 }

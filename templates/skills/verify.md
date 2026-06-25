@@ -1,138 +1,134 @@
 ---
 name: smooth-verify
-description: "Verify implementation against acceptance criteria and record harness evidence. Use after /smooth:apply to validate the change meets requirements."
+description: "验证实现是否满足验收标准并记录 harness 证据。用于 `/smooth:apply` 之后做验证。"
 metadata:
   author: smooth
   version: "1.0"
 ---
 
-Verify the implementation against acceptance criteria. Create a verification checklist, run what you can, record evidence, and turn real problems into pitfalls, lessons, and candidate harness improvements.
+验证实现是否满足验收标准。创建验证清单，能跑的都跑起来，记录证据，并把真实问题沉淀成踩坑和经验。
 
-**Input**: Optionally specify a change name (e.g., `/smooth:verify tracking-events-v2`). If omitted, infer from conversation context. If ambiguous, ask.
+**默认语言：除命令、文件名、代码标识、引用原文外，面向用户的回复和生成的 Smooth 文档都用简体中文。**
+
+**输入**：可以指定变更名，例如 `/smooth:verify tracking-events-v2`。如果省略，就从对话上下文推断；如果不明确，先问用户。
 
 ---
 
-## What You Do
+## 你要做什么
 
-1. **Select the change**
+1. **选择变更**
 
-   If a name is provided, use it. Otherwise:
-   - Infer from conversation context if the user mentioned a change
-   - Auto-select if only one active change exists
-   - If ambiguous, list available changes and ask
+   如果提供了名称，就使用它。否则：
+   - 从对话上下文推断
+   - 如果只有一个活跃变更，自动选择
+   - 如果不明确，列出可用变更并询问
 
-   Always announce: "Using change: <name>"
+   始终说明：`使用变更：<name>`
 
-2. **Read all context**
+2. **读取完整上下文**
 
-   Read every artifact in the change directory:
-   - `product.md` — acceptance criteria and requirements
-   - `technical.md` — technical acceptance criteria (if exists)
-   - `tasks.md` — what was implemented
-   - `workpad.md` — acceptance, validation notes, and confusions (if exists)
+   读取变更目录里的所有产物：
+   - `product.md`：验收标准和需求
+   - `technical.md`：技术验收标准（如果存在）
+   - `tasks.md`：已经实现了什么
+   - `workpad.md`：验收、验证想法和疑问（如果存在）
 
-3. **Create verify.md**
+3. **创建 `verify.md`**
 
-   Based on acceptance criteria from product.md and technical.md, create `smooth/<name>/verify.md` with the following structure:
+   基于 `product.md` 和 `technical.md` 的验收标准，创建 `smooth/<name>/verify.md`，推荐结构：
 
    ```markdown
-   # Verify
+   # 验证
 
-   ## Code Review
-   - [ ] <generated based on actual diff — scope, side effects, conventions, security, etc.>
+   ## 代码审查
+   - [ ] <根据实际 diff 生成的检查项，例如范围、副作用、约定、安全性等>
 
-   ## Automated Checks
-   - [ ] `npx @pureforge/smooth check <name>` — records configured project checks here
+   ## 自动化检查
+   - [ ] `npx @pureforge/smooth check <name>` — 在这里记录项目检查
 
-   ## Evidence
-   - <commands run, observations, and assertions>
+   ## 证据
+   - <运行过的命令、观察结果、结论>
 
-   ## Manual Verification
-   > This change affects xxx page/module — worth a quick manual check to confirm everything works as expected.
+   ## 手动验证
+   > 这个变更影响 xxx 页面/模块，值得快速手动看一眼，确认关键路径正常。
    ```
 
-   Each item should be specific and verifiable — not vague ("works correctly") but concrete ("no unintended imports added to the auth module").
+   每一项都必须具体、可验证，不能是空泛的“能工作”。
 
-4. **Run Code Review**
+4. **执行代码审查**
 
-   Review the actual code diff (use `git diff` against the base branch or recent commits). Generate checklist items based on what's actually relevant to this change. Consider:
-   - Are changes scoped to what tasks.md specified? Flag any unrelated modifications.
-   - Do changes follow the project's existing patterns? (naming, file structure, imports, etc.)
-   - Are there unintended side effects on other modules? Check imports and references.
-   - Is there code duplication that could be consolidated?
-   - Are there potential security issues? (unsanitized input, hardcoded secrets, exposed endpoints)
-   - Is error handling appropriate for the context?
-   - Run available verification commands (tests, type checks, linting)
+   查看实际代码 diff（用 `git diff` 对比基线或最近提交），根据真实变更生成检查项。重点看：
+   - 改动是否严格落在任务范围内
+   - 是否符合项目现有模式
+   - 是否影响其他模块
+   - 是否有可合并的重复代码
+   - 是否存在安全问题
+   - 错误处理是否合适
+   - 能跑的验证命令是否已经跑过
 
-   Only include items that are relevant to the actual diff. Don't add generic items that don't apply.
-
-   Run the harness checks yourself when possible:
+   如果项目有配置好的检查，优先运行：
 
    ```bash
    npx @pureforge/smooth check <name>
    ```
 
-   `smooth check` reads `smooth.config.json` when present. Without config, it prefers a project-level `make verify` target; if none exists, it auto-detects package scripts (`lint`, `typecheck`, `test`, `build`). Project-specific checks can cover duplicate code, unused exports/files, dependency boundaries, dead references, and other mechanically verifiable lessons. Don't ask the user to run this unless the command needs credentials, dependencies, or environment access you don't have.
+   `smooth check` 会读取 `smooth.config.json`，否则优先 `make verify`，再不然自动检测 `lint`、`typecheck`、`test`、`build` 等脚本。不要把有权限或环境限制的检查直接推给用户，能本地跑的先本地跑。
 
-   Mark items as done or report issues found. If issues are significant, suggest going back to `/smooth:apply` to fix.
+   标记已完成项，或者报告发现的问题。若问题明显，建议回到 `/smooth:apply` 修复。
 
-5. **Capture pitfalls and lessons**
+5. **记录踩坑和经验**
 
-   Verification is also where the harness learns.
+   验证阶段也是 harness 学习的地方。
 
-   If verification found a real issue, create or update `smooth/<name>/pitfalls.md`:
-
-   ```markdown
-   # Pitfalls
-
-   ## <short title>
-   - Symptom:
-   - Root cause:
-   - How it was caught:
-   - Fix / prevention:
-   - Could this improve the harness? yes/no — <why>
-   ```
-
-   If a reusable lesson emerged, create or update `smooth/<name>/lessons.md`:
+   如果发现真实问题，创建或更新 `smooth/<name>/pitfalls.md`：
 
    ```markdown
-   # Lessons
+   # 踩坑记录
 
-   ## <lesson stated as future guidance>
-   - Source: pitfalls.md#<section>
-   - Applies to: code-generation | doc-generation | workflow | project-check | config-default | tool-capability | guidance
-   - Harness improvement:
-     - Type: generation-rule | document-rule | workflow-rule | project-check | config-default | tool-capability | guidance-update
-     - Target: <template/config/check/tool/doc to improve>
-     - Idea: <specific change that would prevent or reduce this pitfall next time>
-   - Mechanical option: <command/script/lint idea, or "none — judgment-based">
+   ## <简短标题>
+   - 症状：
+   - 根因：
+   - 如何被发现：
+   - 修复 / 预防：
+   - 这能改进 harness 吗：是 / 否 — <原因>
    ```
 
-   Don't invent lessons to fill the file. No notable pitfall is a valid outcome; record that briefly if useful.
+   如果提炼出可复用经验，创建或更新 `smooth/<name>/lessons.md`：
 
-6. **Manual Verification hint**
+   ```markdown
+   # 经验沉淀
 
-   Based on the change scope, give the user a brief hint about what to manually check. Keep it to 1-2 sentences, e.g.:
-   - "This change affects the settings page theme toggle — worth a quick manual check on the animation and persistence."
-   - "This change touches the payment flow — worth a quick manual test of the checkout path."
+   ## <一句话说明未来该怎么做>
+   - 来源：pitfalls.md#<section>
+   - 适用范围：code-generation | doc-generation | workflow | project-check | config-default | tool-capability | guidance
+   - Harness 改进：
+     - 类型：generation-rule | document-rule | workflow-rule | project-check | config-default | tool-capability | guidance-update
+     - 目标：<要改进的模板 / 配置 / 检查 / 工具 / 文档>
+     - 方案：<能减少或避免这类问题的具体改动>
+   - 机械方案：<可以用的命令 / 脚本 / lint 思路，或“无，需要判断”>
+   ```
 
-   Don't list exhaustive test cases. Just point the user to the right area.
+   不要为了填文件而虚构经验。没有明显踩坑也是合理结果，必要时简单记录即可。
 
-7. **Clean up**
+6. **给手动验证提示**
 
-   After all items pass:
-   - Remove any temporary test code or scripts created during verification
-   - Keep verify.md as a record of what was verified
+   根据变更范围，给用户一句简短提示，说明重点手工看什么。保持 1-2 句，不要罗列穷尽测试。
 
-8. **Suggest next step**
+7. **清理**
 
-   When all items pass, suggest archiving: "All checks passed. Ready to archive with `/smooth:archive`."
+   所有检查完成后：
+   - 删除临时测试代码或脚本
+   - 保留 `verify.md` 作为记录
+
+8. **建议下一步**
+
+   全部通过后，建议归档：`所有检查都通过了。可以用 /smooth:archive 归档。`
 
 ---
 
-## Guardrails
+## 守则
 
-- **Don't fix bugs here** — If verification fails, suggest going back to `/smooth:apply`; don't fix inline.
-- **Be specific, not vague** — "API returns 200" not "API works"; checklist items must be concretely verifiable.
-- **Promote lessons into harness improvements** — If a problem can be caught by code, command, lint, or script, record a project-check idea. If it affects how code, docs, or workflow decisions are generated, record the template, rule, config, tool, or guidance that should change.
-- **Clean up after yourself** — Remove temporary test files, scripts, or debug code once checks pass.
+- 不要在验证阶段直接修 bug；如果失败了，建议回到 `/smooth:apply`。
+- 检查项必须具体可验证，不能空泛。
+- 如果问题能通过代码、命令、lint 或脚本捕获，就把它沉淀成 project-check 方案；如果是代码/文档/工作流生成方式的问题，就把它沉淀成模板、规则、配置、工具或指导更新。
+- 清理临时文件、脚本和调试代码。

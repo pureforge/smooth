@@ -13,17 +13,17 @@ export function check(targetPath, changeName, options = {}) {
   const record = options.record !== false;
 
   if (!existsSync(smoothDir)) {
-    console.log('smooth: not initialized. Run `smooth init` first.');
+    console.log('smooth: 尚未初始化。请先运行 `smooth init`。');
     return false;
   }
 
   const change = selectChange(smoothDir, changeName);
   if (changeName && !change) {
-    console.log(`Change "${changeName}" not found.`);
+    console.log(`未找到变更：“${changeName}”。`);
     return false;
   }
 
-  if (change) console.log(`\n  Change: ${change.id}`);
+  if (change) console.log(`\n  变更：${change.id}`);
 
   const checks = [
     ...(change ? [artifactCheck(change)] : []),
@@ -31,8 +31,8 @@ export function check(targetPath, changeName, options = {}) {
   ];
 
   if (checks.length === 0) {
-    console.log('No checks configured or detected.');
-    console.log(`Add ${CONFIG_FILE} with a "checks" array, define make verify, or add package scripts like lint/test/typecheck/build.`);
+    console.log('没有配置或检测到检查。');
+    console.log(`可以添加带 "checks" 数组的 ${CONFIG_FILE}，定义 make verify，或添加 lint/test/typecheck/build 等 package scripts。`);
     return true;
   }
 
@@ -47,16 +47,16 @@ export function check(targetPath, changeName, options = {}) {
   const warned = results.some((r) => r.status === 'warn');
   if (change && record) {
     recordResults(change, results);
-    console.log(`\n  Evidence recorded in smooth/${change.id}/verify.md`);
+    console.log(`\n  证据已记录到 smooth/${change.id}/verify.md`);
   }
 
   console.log();
   if (failed) {
-    console.log('  Some checks failed.');
+    console.log('  有检查失败。');
   } else if (warned) {
-    console.log('  Checks passed with warnings.');
+    console.log('  检查通过，但有提醒。');
   } else {
-    console.log('  All checks passed.');
+    console.log('  所有检查通过。');
   }
   return !failed;
 }
@@ -67,8 +67,8 @@ function selectChange(smoothDir, changeName) {
   const active = discoverChanges(smoothDir);
   if (active.length === 1) return active[0];
   if (active.length > 1) {
-    console.log('Multiple active changes. Running project checks without recording evidence.');
-    console.log('Specify one to record check results:\n');
+    console.log('有多个活跃变更。将只运行项目检查，不记录到某个变更里。');
+    console.log('如需记录检查结果，请指定一个变更：\n');
     for (const c of active) console.log(`  smooth check ${c.id}`);
     console.log();
   }
@@ -78,7 +78,7 @@ function selectChange(smoothDir, changeName) {
 function artifactCheck(change) {
   return {
     id: 'smooth-artifacts',
-    description: 'Validate smooth change artifact structure',
+    description: '校验 Smooth 变更产物结构',
     run: () => {
       const { errors, warnings } = validateChange(change.dir, change.id);
       const lines = [];
@@ -86,7 +86,7 @@ function artifactCheck(change) {
       for (const w of warnings) lines.push(`WARN: ${w}`);
       return {
         status: errors.length ? 'fail' : warnings.length ? 'warn' : 'pass',
-        output: lines.join('\n') || 'Artifact structure is valid.',
+        output: lines.join('\n') || '变更产物结构有效。',
       };
     },
   };
@@ -108,7 +108,7 @@ function loadConfiguredChecks(targetPath) {
   } catch (err) {
     return [{
       id: 'smooth-config',
-      description: `Parse ${CONFIG_FILE}`,
+      description: `解析 ${CONFIG_FILE}`,
       run: () => ({ status: 'fail', output: err.message }),
     }];
   }
@@ -138,7 +138,7 @@ function detectChecks(targetPath) {
   if (existsSync(makefile)) {
     const body = readFileSync(makefile, 'utf-8');
     if (/^verify:/m.test(body)) {
-      return [{ id: 'verify', command: 'make verify', description: 'Project verification target' }];
+      return [{ id: 'verify', command: 'make verify', description: '项目验证目标' }];
     }
   }
 
@@ -157,7 +157,7 @@ function detectChecks(targetPath) {
         checks.push({
           id: script,
           command: `${runner} run ${script}`,
-          description: `Detected package script: ${script}`,
+          description: `检测到 package script：${script}`,
         });
       }
     }
@@ -210,7 +210,7 @@ function runCheck(targetPath, spec) {
   return {
     id: spec.id,
     description: spec.description || '',
-    command: spec.command || '(built-in)',
+    command: spec.command || '（内置）',
     status,
     durationMs: Date.now() - started,
     output: trimOutput(output),
@@ -225,13 +225,13 @@ function printResult(result) {
 function recordResults(change, results) {
   const verifyPath = join(change.dir, 'verify.md');
   if (!existsSync(verifyPath)) {
-    writeFileSync(verifyPath, '# Verify\n\n');
+    writeFileSync(verifyPath, '# 验证\n\n');
   }
 
   const timestamp = new Date().toISOString();
   const lines = [];
-  lines.push(`\n## Automated Check Run - ${timestamp}\n`);
-  lines.push('| Check | Result | Command |');
+  lines.push(`\n## 自动化检查记录 - ${timestamp}\n`);
+  lines.push('| 检查 | 结果 | 命令 |');
   lines.push('|---|---|---|');
   for (const r of results) {
     lines.push(`| ${escapeCell(r.id)} | ${r.status} | \`${escapeCell(r.command)}\` |`);
@@ -241,7 +241,7 @@ function recordResults(change, results) {
   for (const r of interesting) {
     lines.push(`\n### ${r.id}`);
     if (r.description) lines.push(`\n${r.description}`);
-    lines.push(`\nResult: **${r.status}** (${r.durationMs}ms)`);
+    lines.push(`\n结果：**${r.status}**（${r.durationMs}ms）`);
     if (r.output) {
       lines.push('\n```text');
       lines.push(r.output);
@@ -255,7 +255,7 @@ function recordResults(change, results) {
 function trimOutput(output) {
   if (!output) return '';
   if (output.length <= OUTPUT_LIMIT) return output;
-  return `${output.slice(0, OUTPUT_LIMIT)}\n... output truncated ...`;
+  return `${output.slice(0, OUTPUT_LIMIT)}\n... 输出已截断 ...`;
 }
 
 function slug(s) {

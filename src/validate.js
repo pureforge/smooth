@@ -7,7 +7,7 @@ export function validate(targetPath, changeName) {
   const smoothDir = join(targetPath, 'smooth');
 
   if (!existsSync(smoothDir)) {
-    console.log('smooth: not initialized. Run `smooth init` first.');
+    console.log('smooth: 尚未初始化。请先运行 `smooth init`。');
     return;
   }
 
@@ -20,7 +20,7 @@ export function validate(targetPath, changeName) {
   }
 
   if (targets.length === 0) {
-    console.log('No active changes to validate.');
+    console.log('没有可校验的活跃变更。');
     return;
   }
 
@@ -28,7 +28,7 @@ export function validate(targetPath, changeName) {
 
   for (const { id, dir } of targets) {
     if (!dir || !existsSync(dir)) {
-      console.log(`  ✗ ${id} — not found`);
+      console.log(`  ✗ ${id} — 未找到`);
       allValid = false;
       continue;
     }
@@ -39,8 +39,8 @@ export function validate(targetPath, changeName) {
 
     const icon = valid ? '✓' : '✗';
     const counts = [];
-    if (errors.length) counts.push(`${errors.length} error${errors.length > 1 ? 's' : ''}`);
-    if (warnings.length) counts.push(`${warnings.length} warning${warnings.length > 1 ? 's' : ''}`);
+    if (errors.length) counts.push(`${errors.length} 个错误`);
+    if (warnings.length) counts.push(`${warnings.length} 个提醒`);
 
     console.log(`  ${icon} ${id}${counts.length ? ' — ' + counts.join(', ') : ''}`);
     for (const e of errors) console.log(`      ✗ ${e}`);
@@ -49,9 +49,9 @@ export function validate(targetPath, changeName) {
 
   console.log();
   if (allValid) {
-    console.log('  All changes valid.');
+    console.log('  所有变更结构有效。');
   } else {
-    console.log('  Some changes have errors.');
+    console.log('  有些变更存在错误。');
   }
 }
 
@@ -73,19 +73,25 @@ export function validateChange(changeDir, name) {
     }
   }
 
-  // product.md is required
+  // product.md is required after optional research.
+  const researchPath = join(changeDir, 'research.md');
+  const hasResearch = existsSync(researchPath);
   const productPath = join(changeDir, 'product.md');
   if (!existsSync(productPath)) {
-    errors.push('Missing product.md — every change needs requirements');
+    if (hasResearch) {
+      warnings.push('已有 research.md，但还没有 product.md — 前置调研完成后应继续 `/smooth:product`');
+    } else {
+      errors.push('缺少 product.md — 每个变更都需要需求说明');
+    }
   } else {
     const content = readFileSync(productPath, 'utf-8').trim();
     if (content.length < 20) {
-      warnings.push('product.md looks too short (< 20 chars)');
+      warnings.push('product.md 看起来太短（少于 20 个字符）');
     }
   }
 
   if (!existsSync(join(changeDir, 'workpad.md'))) {
-    warnings.push('Missing workpad.md — harness process record not started');
+    warnings.push('缺少 workpad.md — harness 过程记录还没有开始');
   }
 
   // tasks.md format check
@@ -94,7 +100,7 @@ export function validateChange(changeDir, name) {
     const content = readFileSync(tasksPath, 'utf-8');
     const taskLines = (content.match(/^- \[[ x]\].+/gm) || []);
     if (taskLines.length === 0) {
-      warnings.push('tasks.md has no task items (expected `- [ ]` or `- [x]`)');
+      warnings.push('tasks.md 没有任务项（应使用 `- [ ]` 或 `- [x]`）');
     }
   }
 
@@ -103,15 +109,16 @@ export function validateChange(changeDir, name) {
     const content = readFileSync(lessonsPath, 'utf-8');
     const usesOldCheckFormat = /Candidate check:/i.test(content);
     if (usesOldCheckFormat) {
-      warnings.push('lessons.md uses old `Candidate check` format — use `Harness improvement` with Type/Target/Idea');
+      warnings.push('lessons.md 使用旧的 `Candidate check` 格式 — 请改用 `Harness improvement` 或 `Harness 改进`，并写清 Type/Target/Idea');
     }
-    if (!usesOldCheckFormat && hasLessonContent(content) && !/Harness improvement:/i.test(content)) {
-      warnings.push('lessons.md has lesson content but no `Harness improvement` target');
+    if (!usesOldCheckFormat && hasLessonContent(content) && !(/Harness improvement:|Harness 改进：?/i.test(content))) {
+      warnings.push('lessons.md 有经验内容，但缺少 `Harness improvement` 或 `Harness 改进` 目标');
     }
   }
 
   // Unexpected files (subdirectories are allowed — e.g. nested phases)
   const expected = new Set([
+    'research.md',
     'product.md',
     'technical.md',
     'tasks.md',
@@ -124,7 +131,7 @@ export function validateChange(changeDir, name) {
   for (const entry of entries) {
     if (expected.has(entry) || entry.startsWith('.')) continue;
     if (statSync(join(changeDir, entry)).isDirectory()) continue;
-    warnings.push(`Unexpected file: ${entry}`);
+    warnings.push(`未预期的文件：${entry}`);
   }
 
   return { errors, warnings };
