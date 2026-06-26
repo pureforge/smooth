@@ -50,7 +50,8 @@ export function list(targetPath) {
 
   if (active.length === 0) {
     console.log('没有活跃变更。\n');
-    console.log('可以用以下命令开始：/smooth:product "your idea"');
+    console.log('可以先调研：/smooth:research "你的主题"');
+    console.log('也可以直接定义需求：/smooth:product "你的想法"');
     return;
   }
 

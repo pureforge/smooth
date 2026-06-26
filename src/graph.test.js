@@ -23,6 +23,17 @@ test('formatStatus sends completed tasks to verify before archive', () => {
   assert.doesNotMatch(status, /research（前置调研）/);
 });
 
+test('formatStatus suggests tasks after product when technical is absent', () => {
+  const change = mkdtempSync(join(tmpdir(), 'smooth-graph-'));
+  mkdirSync(change, { recursive: true });
+  writeFileSync(join(change, 'product.md'), '# 产品需求\n\n构建 foo。\n');
+
+  const status = formatStatus(change);
+
+  assert.match(status, /下一步：\/smooth:tasks/);
+  assert.doesNotMatch(status, /下一步：\/smooth:technical/);
+});
+
 test('formatStatus allows archive after verify exists', () => {
   const change = fixture();
   writeFileSync(join(change, 'verify.md'), '# 验证\n\n检查通过。\n');
@@ -51,4 +62,14 @@ test('getNext skips optional research and returns product first', () => {
   const next = getNext(change);
 
   assert.equal(next?.id, 'product');
+});
+
+test('getNext skips optional workpad and technical after product', () => {
+  const change = mkdtempSync(join(tmpdir(), 'smooth-graph-'));
+  mkdirSync(change, { recursive: true });
+  writeFileSync(join(change, 'product.md'), '# 产品需求\n\n构建 foo。\n');
+
+  const next = getNext(change);
+
+  assert.equal(next?.id, 'tasks');
 });

@@ -9,6 +9,10 @@ tags: [workflow, verify, testing]
 
 **默认语言：除命令、文件名、代码标识、引用原文外，面向用户的回复和生成的 Smooth 文档都用简体中文。**
 
+**记忆意识：** 开始前按需读取 `smooth/memory/user.md`、`smooth/memory/pitfalls.md` 和相关 `smooth/memory/domains/<topic>.md`。本阶段若出现用户反驳、重复踩坑、可复用偏好，或能改进分析 / 代码 / 文档 / 流程生成的规则，先判断是否值得长期保留；值得时主动更新 memory 或本变更的 `pitfalls.md` / `lessons.md`，一次性细节只修正当前输出。
+
+**对话输出：** 面向用户先说明当前判断或正在做的动作，再给关键产物摘要和下一步。不要默认整篇粘贴产物内容，除非用户要求或内容很短；需要用户决策时给出少量选项，并标出推荐默认。
+
 **输入**：可以指定变更名，例如 `/smooth:verify tracking-events-v2`。如果省略，就从对话上下文推断；如果不明确，先问用户。
 
 ---
@@ -34,7 +38,7 @@ tags: [workflow, verify, testing]
 
 3. **创建 `verify.md`**
 
-   基于 `product.md` 和 `technical.md` 的验收标准，创建 `smooth/<name>/verify.md`，推荐结构：
+   基于 `product.md` 和 `technical.md` 的验收标准，创建 `smooth/changes/<name>/verify.md`，推荐结构：
 
    ```markdown
    # 验证
@@ -79,7 +83,7 @@ tags: [workflow, verify, testing]
 
    验证阶段也是 harness 学习的地方。
 
-   如果发现真实问题，创建或更新 `smooth/<name>/pitfalls.md`：
+   如果发现真实问题，创建或更新 `smooth/changes/<name>/pitfalls.md`：
 
    ```markdown
    # 踩坑记录
@@ -92,7 +96,7 @@ tags: [workflow, verify, testing]
    - 这能改进 harness 吗：是 / 否 — <原因>
    ```
 
-   如果提炼出可复用经验，创建或更新 `smooth/<name>/lessons.md`：
+   如果提炼出可复用经验，创建或更新 `smooth/changes/<name>/lessons.md`：
 
    ```markdown
    # 经验沉淀

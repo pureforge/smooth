@@ -25,6 +25,17 @@ test('init exits non-zero when no valid tool is provided', () => {
   assert.equal(existsSync(join(root, 'smooth')), false);
 });
 
+test('help describes auto-detected tools and smooth check', () => {
+  const proc = spawnSync(process.execPath, ['bin/smooth.js', 'help'], {
+    cwd: process.cwd(),
+    encoding: 'utf-8',
+  });
+
+  assert.equal(proc.status, 0);
+  assert.match(proc.stdout, /默认：自动检测/);
+  assert.match(proc.stdout, /smooth check \[name\] \[--no-record\]/);
+});
+
 test('init creates conversation memory plus research and learn commands and skills', async () => {
   const root = mkdtempSync(join(tmpdir(), 'smooth-init-'));
 
@@ -33,6 +44,8 @@ test('init creates conversation memory plus research and learn commands and skil
   assert.ok(existsSync(join(root, 'smooth', 'memory', 'user.md')));
   assert.ok(existsSync(join(root, 'smooth', 'memory', 'pitfalls.md')));
   assert.ok(existsSync(join(root, 'smooth', 'memory', 'domains', 'README.md')));
+  assert.ok(existsSync(join(root, 'smooth', 'changes')));
+  assert.ok(existsSync(join(root, 'smooth', 'archive')));
   assert.ok(existsSync(join(root, '.claude', 'commands', 'smooth', 'research.md')));
   assert.ok(existsSync(join(root, '.claude', 'commands', 'smooth', 'learn.md')));
   assert.ok(existsSync(join(root, '.claude', 'skills', 'smooth-research', 'SKILL.md')));

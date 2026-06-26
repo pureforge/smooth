@@ -33,7 +33,7 @@ export function validate(targetPath, changeName) {
       continue;
     }
 
-    const { errors, warnings } = validateChange(dir, id);
+    const { errors, warnings } = validateChange(dir);
     const valid = errors.length === 0;
     if (!valid) allValid = false;
 
@@ -55,7 +55,7 @@ export function validate(targetPath, changeName) {
   }
 }
 
-export function validateChange(changeDir, name) {
+export function validateChange(changeDir) {
   const errors = [];
   const warnings = [];
 

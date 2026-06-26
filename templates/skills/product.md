@@ -10,6 +10,10 @@ metadata:
 
 **默认语言：除命令、文件名、代码标识、引用原文外，面向用户的回复和生成的 Smooth 文档都用简体中文。**
 
+**记忆意识：** 开始前按需读取 `smooth/memory/user.md`、`smooth/memory/pitfalls.md` 和相关 `smooth/memory/domains/<topic>.md`。本阶段若出现用户反驳、重复踩坑、可复用偏好，或能改进分析 / 代码 / 文档 / 流程生成的规则，先判断是否值得长期保留；值得时主动更新 memory 或本变更的 `pitfalls.md` / `lessons.md`，一次性细节只修正当前输出。
+
+**对话输出：** 面向用户先说明当前判断或正在做的动作，再给关键产物摘要和下一步。不要默认整篇粘贴产物内容，除非用户要求或内容很短；需要用户决策时给出少量选项，并标出推荐默认。
+
 **重要：产品模式只定义需求，不实现。** 你必须随着讨论迭代创建或更新 `product.md`；这是产品思考的交付物，不是编码。代码和技术决策边界见下方守则。
 
 **这是带交付物的工作姿态。** 你是用户的产品思考伙伴，帮助澄清要构建什么；`product.md` 记录稳定需求，`workpad.md` 记录计划、验收、验证想法和未决疑问。
@@ -42,16 +46,16 @@ metadata:
    如果没有提供名称，从用户描述中推导 kebab-case 名称，并创建目录：
 
    ```bash
-   mkdir -p smooth/<name>
+   mkdir -p smooth/changes/<name>
    ```
 
    如果目录已存在，先读取已有产物并从上下文继续。若存在 `research.md`，必须先读取它，把调研事实、风险和开放问题作为需求讨论输入。
 
-   如果这是大需求的阶段拆分，目录可以是 `smooth/<big-name>/phase-1`，后续所有产物都写在这个阶段目录里。
+   如果这是大需求的阶段拆分，目录可以是 `smooth/changes/<big-name>/phase-1`，后续所有产物都写在这个阶段目录里。
 
 2. **讨论并写 `product.md` 与 `workpad.md`**
 
-   如果存在 `smooth/<name>/research.md`，先从其中提炼：
+   如果存在 `smooth/changes/<name>/research.md`，先从其中提炼：
    - 已验证事实
    - 当前现状
    - 风险与约束
@@ -60,13 +64,13 @@ metadata:
 
    不要把调研内容原样搬进需求文档；只吸收会影响需求判断的结论。
 
-   讨论问题空间时持续更新 `smooth/<name>/product.md`，标题使用：
+   讨论问题空间时持续更新 `smooth/changes/<name>/product.md`，标题使用：
 
    ```markdown
    # 产品需求
    ```
 
-   同时创建或更新 `smooth/<name>/workpad.md`，作为当前过程记录：
+   同时创建或更新 `smooth/changes/<name>/workpad.md`，作为当前过程记录：
 
    ```markdown
    # 工作台
@@ -124,10 +128,12 @@ metadata:
 开始时检查是否已有产物：
 
 ```bash
-ls smooth/<name>/ 2>/dev/null
+ls smooth/changes/<name>/ 2>/dev/null
 ```
 
 如果已存在，先读取它们，再继续讨论。
+
+如果需求依赖近期外部信息、竞品/法规/市场变化、第三方 API 现状，或项目内部链路还不清楚，先建议做 `/smooth:research`。如果用户希望直接推进，就把信息缺口和风险写进 `workpad.md`，继续产品讨论。
 
 如果 `research.md` 已存在，把它当作需求澄清的前置输入；如果用户还没做调研，也不要强制要求，前置调研是可选阶段。
 
@@ -138,7 +144,7 @@ ls smooth/<name>/ 2>/dev/null
 阶段化时，大需求是容器目录，每个阶段都是完整变更：
 
 ```text
-smooth/<big-name>/
+smooth/changes/<big-name>/
   phase-1/product.md
   phase-2/product.md
   phase-3/product.md
@@ -147,13 +153,13 @@ smooth/<big-name>/
 保持轻量：
 - 只把当前阶段写完整。
 - 在 phase 1 顶部用一两句话说明整体目标和后续阶段草图。
-- 每个阶段都独立完成 product → technical → tasks → apply → verify → archive。
+- 每个阶段都独立完成 product →（可选 technical）→ tasks → apply → verify → archive。
 
 ### 建议下一步
 
 当需求足够稳定时，判断复杂度并建议：
 
-- **简单变更**：可以跳过技术设计，直接进入 `/smooth:apply`。
+- **简单变更**：可以跳过技术设计，直接进入 `/smooth:tasks`。
 - **中等变更**：有一些设计决策，建议 `/smooth:technical`。
 - **复杂变更**：跨模块或架构影响明显，建议先 `/smooth:technical`。
 

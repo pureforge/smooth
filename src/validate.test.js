@@ -7,7 +7,7 @@ import { validateChange } from './validate.js';
 
 function fixture() {
   const root = mkdtempSync(join(tmpdir(), 'smooth-validate-'));
-  const change = join(root, 'smooth', 'foo');
+  const change = join(root, 'smooth', 'changes', 'foo');
   mkdirSync(change, { recursive: true });
   writeFileSync(join(change, 'product.md'), '# 产品需求\n\n构建 foo。\n');
   writeFileSync(join(change, 'tasks.md'), '# 任务\n\n- [x] 构建 foo\n');
@@ -23,7 +23,7 @@ test('validate warns on old Candidate check lessons format', () => {
   - Candidate check: duplicate utility detection
 `);
 
-  const { warnings } = validateChange(change, 'foo');
+  const { warnings } = validateChange(change);
 
   assert.ok(warnings.some((w) => w.includes('Candidate check')));
   assert.equal(warnings.filter((w) => w.includes('lessons.md')).length, 1);
@@ -43,7 +43,7 @@ test('validate accepts lessons with harness improvement target', () => {
 - Mechanical option: duplicate code check
 `);
 
-  const { warnings } = validateChange(change, 'foo');
+  const { warnings } = validateChange(change);
 
   assert.equal(warnings.some((w) => w.includes('Candidate check')), false);
   assert.equal(warnings.some((w) => w.includes('缺少 `Harness improvement`')), false);
@@ -58,7 +58,7 @@ test('validate warns when lesson content has no harness improvement target', () 
 - Applies to: code-generation
 `);
 
-  const { warnings } = validateChange(change, 'foo');
+  const { warnings } = validateChange(change);
 
   assert.ok(warnings.some((w) => w.includes('缺少 `Harness improvement`')));
 });
@@ -70,7 +70,7 @@ test('validate allows explicit no notable lessons note', () => {
 No notable lessons.
 `);
 
-  const { warnings } = validateChange(change, 'foo');
+  const { warnings } = validateChange(change);
 
   assert.equal(warnings.some((w) => w.includes('lessons.md')), false);
 });
@@ -82,18 +82,18 @@ test('validate allows explicit Chinese no notable lessons note', () => {
 没有明显经验。
 `);
 
-  const { warnings } = validateChange(change, 'foo');
+  const { warnings } = validateChange(change);
 
   assert.equal(warnings.some((w) => w.includes('lessons.md')), false);
 });
 
 test('validate allows research-only change before product is written', () => {
   const root = mkdtempSync(join(tmpdir(), 'smooth-validate-'));
-  const change = join(root, 'smooth', 'foo');
+  const change = join(root, 'smooth', 'changes', 'foo');
   mkdirSync(change, { recursive: true });
   writeFileSync(join(change, 'research.md'), '# 前置调研\n\n已验证事实。\n');
 
-  const { errors, warnings } = validateChange(change, 'foo');
+  const { errors, warnings } = validateChange(change);
 
   assert.equal(errors.length, 0);
   assert.ok(warnings.some((w) => w.includes('还没有 product.md')));

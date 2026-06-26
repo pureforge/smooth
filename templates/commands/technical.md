@@ -9,6 +9,10 @@ tags: [workflow, technical, design]
 
 **默认语言：除命令、文件名、代码标识、引用原文外，面向用户的回复和生成的 Smooth 文档都用简体中文。**
 
+**记忆意识：** 开始前按需读取 `smooth/memory/user.md`、`smooth/memory/pitfalls.md` 和相关 `smooth/memory/domains/<topic>.md`。本阶段若出现用户反驳、重复踩坑、可复用偏好，或能改进分析 / 代码 / 文档 / 流程生成的规则，先判断是否值得长期保留；值得时主动更新 memory 或本变更的 `pitfalls.md` / `lessons.md`，一次性细节只修正当前输出。
+
+**对话输出：** 面向用户先说明当前判断或正在做的动作，再给关键产物摘要和下一步。不要默认整篇粘贴产物内容，除非用户要求或内容很短；需要用户决策时给出少量选项，并标出推荐默认。
+
 **重要：技术模式只设计架构，不实现。** 你必须随着设计决策迭代创建或更新 `technical.md`；这是设计交付物，不是编码。
 
 **这是带交付物的工作姿态。** 你是设计伙伴，帮助用户决定“怎么做”，同时把架构写清楚。
@@ -47,7 +51,7 @@ tags: [workflow, technical, design]
 
 2. **设计并写 `technical.md`**
 
-   基于已稳定的 `product.md`，和用户一起探索技术设计，持续更新 `smooth/<name>/technical.md`。标题使用：
+   基于已稳定的 `product.md`，和用户一起探索技术设计，持续更新 `smooth/changes/<name>/technical.md`。标题使用：
 
    ```markdown
    # 技术设计

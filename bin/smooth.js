@@ -15,8 +15,6 @@ function parseArgs(argv) {
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--tool' && i + 1 < argv.length) {
       flags.tool = argv[++i];
-    } else if (argv[i] === '--force' || argv[i] === '-f') {
-      flags.force = true;
     } else if (argv[i] === '--no-record') {
       flags.record = false;
     } else if (!argv[i].startsWith('-')) {
@@ -85,10 +83,11 @@ function printHelp() {
   smooth list                           列出活跃变更
   smooth status [name]                  查看产物图状态
   smooth validate [name]                检查变更结构
+  smooth check [name] [--no-record]     运行项目检查并记录证据
 
 选项：
   --tool <tools>   逗号分隔：${getAvailableTools().join(', ')}
-                   默认：claude
+                   默认：自动检测；未检测到时需要显式指定
 
 初始化后，可在 AI 助手里使用这些斜杠命令：
   /smooth:research    可选前置调研
@@ -103,7 +102,7 @@ function printHelp() {
 对话记忆：
   smooth-learn 技能     在支持时由助手主动更新记忆
 
-高级 harness 运行器：
-  smooth check [name] [--no-record]     运行项目检查并记录证据
+Harness 检查：
+  smooth check 会读取 smooth.config.json；没有配置时会自动检测 make verify 或 package scripts。
 `);
 }

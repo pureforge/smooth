@@ -1,5 +1,5 @@
 import { existsSync, readdirSync, statSync } from 'fs';
-import { join } from 'path';
+import { basename, join } from 'path';
 
 const CHANGE_MARKERS = ['product.md', 'research.md'];
 
@@ -12,31 +12,34 @@ function isDir(p) {
 }
 
 /**
- * Discover all active changes under smooth/, supporting one level of
+ * Discover all active changes under smooth/changes/, supporting one level of
  * nesting for phased big requirements.
  *
  * A "change" is any directory that directly contains product.md or research.md:
- *   smooth/foo/product.md           → change "foo"           (flat)
- *   smooth/foo/research.md          → change "foo"           (pre-product research)
- *   smooth/big/phase-1/product.md   → change "big/phase-1"   (big is a container)
+ *   smooth/changes/foo/product.md           → change "foo"           (flat)
+ *   smooth/changes/foo/research.md          → change "foo"           (pre-product research)
+ *   smooth/changes/big/phase-1/product.md   → change "big/phase-1"   (big is a container)
  *
  * A directory that has a change marker is a change and is not descended into.
  * A directory without a marker is treated as a container, and its
  * immediate subdirectories are scanned for changes. Nesting stops there.
  *
- * Returns [{ id, dir }] sorted by id, where id is the smooth-relative
+ * Returns [{ id, dir }] sorted by id, where id is the changes-relative
  * path (may contain "/") and dir is the absolute path to the change.
  */
 export function discoverChanges(smoothDir) {
   if (!existsSync(smoothDir)) return [];
 
+  const root = resolveChangesRoot(smoothDir);
+  if (!existsSync(root)) return [];
+
   const changes = [];
-  const topLevel = readdirSync(smoothDir).filter(
-    (name) => name !== 'archive' && isDir(join(smoothDir, name))
+  const topLevel = readdirSync(root).filter(
+    (name) => isDir(join(root, name))
   );
 
   for (const name of topLevel) {
-    const dir = join(smoothDir, name);
+    const dir = join(root, name);
     const sub = readdirSync(dir).filter((s) => isDir(join(dir, s)));
     const subChanges = [];
     for (const s of sub) {
@@ -74,4 +77,8 @@ export function findChange(smoothDir, id) {
 
 function hasChangeMarker(dir) {
   return CHANGE_MARKERS.some((file) => existsSync(join(dir, file)));
+}
+
+function resolveChangesRoot(smoothDir) {
+  return basename(smoothDir) === 'changes' ? smoothDir : join(smoothDir, 'changes');
 }

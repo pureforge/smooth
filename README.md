@@ -11,9 +11,9 @@ A local-first project development harness for AI coding assistants. Smooth helps
 
 ## What is this
 
-Smooth is a **project development harness**, not just a prompt pack. It defines a set of phases (optional research → product → technical → tasks → apply → verify → archive) and keeps durable artifacts for the work: research, requirements, design, tasks, workpad, verification evidence, pitfalls, and lessons.
+Smooth is a **project development harness**, not just a prompt pack. It defines a set of phases (optional research → product → optional technical design → tasks → apply → verify → archive) and keeps durable artifacts for the work: research, requirements, design, tasks, workpad, verification evidence, pitfalls, and lessons.
 
-Smooth also keeps lightweight conversation memory for day-to-day analysis that is not tied to a code change. A stock analysis preference, research checklist, response style correction, user rebuttal, or recurring conversation pitfall can become durable memory and improve future answers.
+Active change artifacts live under `smooth/changes/<name>/`, completed changes go to `smooth/archive/`, and lightweight conversation memory lives under `smooth/memory/`. A stock analysis preference, research checklist, response style correction, user rebuttal, or recurring conversation pitfall can become durable memory and improve future answers even when there is no code change.
 
 After initialization, your AI assistant gets slash commands that shape how it thinks and works. Most harness behavior is embedded in the flow: the assistant updates the workpad while discussing, records verification evidence while checking, and captures pitfalls/lessons when they happen.
 
@@ -64,8 +64,10 @@ AI:  Archived to smooth/archive/2025-01-23-add-dark-mode/
 ## Quick Start
 
 ```bash
-npx @pureforge/smooth init
+npx @pureforge/smooth init --tool claude
 ```
+
+You can omit `--tool` when Smooth can detect an existing AI tool directory, such as `.claude/`, `.cursor/`, `.codex/`, or `.windsurf/`.
 
 In normal use, start with `/smooth:product` and let the assistant suggest or invoke the next phase. The phase commands are shortcuts, not a checklist the user has to memorize.
 
@@ -160,16 +162,17 @@ your-project/
 │       ├── smooth-verify/SKILL.md
 │       ├── smooth-archive/SKILL.md
 │       └── smooth-learn/SKILL.md
-└── smooth/                  # Change artifacts live here
-    ├── <change-name>/
-    │   ├── research.md
-    │   ├── product.md
-    │   ├── workpad.md
-    │   ├── technical.md
-    │   ├── tasks.md
-    │   ├── verify.md
-    │   ├── pitfalls.md
-    │   └── lessons.md
+└── smooth/                  # Harness artifacts live here
+    ├── changes/             # Active requirements and change artifacts
+    │   └── <change-name>/
+    │       ├── research.md
+    │       ├── product.md
+    │       ├── workpad.md
+    │       ├── technical.md
+    │       ├── tasks.md
+    │       ├── verify.md
+    │       ├── pitfalls.md
+    │       └── lessons.md
     ├── memory/
     │   ├── user.md          # Long-lived user preferences and response style
     │   ├── pitfalls.md      # Recurring conversation pitfalls

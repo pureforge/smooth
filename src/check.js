@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, appendFileSync, writeFileSync } from 'fs';
-import { join } from 'path';
+import { relative, join } from 'path';
 import { spawnSync } from 'child_process';
 import { discoverChanges, findChange } from './changes.js';
 import { validateChange } from './validate.js';
@@ -47,7 +47,7 @@ export function check(targetPath, changeName, options = {}) {
   const warned = results.some((r) => r.status === 'warn');
   if (change && record) {
     recordResults(change, results);
-    console.log(`\n  证据已记录到 smooth/${change.id}/verify.md`);
+    console.log(`\n  证据已记录到 ${relative(targetPath, join(change.dir, 'verify.md'))}`);
   }
 
   console.log();
@@ -80,7 +80,7 @@ function artifactCheck(change) {
     id: 'smooth-artifacts',
     description: '校验 Smooth 变更产物结构',
     run: () => {
-      const { errors, warnings } = validateChange(change.dir, change.id);
+      const { errors, warnings } = validateChange(change.dir);
       const lines = [];
       for (const e of errors) lines.push(`ERROR: ${e}`);
       for (const w of warnings) lines.push(`WARN: ${w}`);

@@ -112,6 +112,8 @@ export async function init(targetPath, toolIds) {
 
   console.log('smooth init — 正在设置项目开发 harness\n');
   mkdirSync(join(targetPath, 'smooth'), { recursive: true });
+  mkdirSync(join(targetPath, 'smooth', 'changes'), { recursive: true });
+  mkdirSync(join(targetPath, 'smooth', 'archive'), { recursive: true });
   initMemory(targetPath);
 
   let initializedTools = 0;
@@ -158,7 +160,9 @@ export async function init(targetPath, toolIds) {
     process.exit(1);
   }
 
-  console.log(`\n  smooth/ — 变更产物与 harness 记录\n`);
+  console.log(`\n  smooth/changes/ — 活跃需求与变更产物\n`);
+  console.log(`  smooth/memory/  — 对话记忆与领域玩法\n`);
+  console.log(`  smooth/archive/ — 已完成变更归档\n`);
   console.log('开始使用：');
   console.log('  /smooth:research "你的主题"    — 可选前置调研');
   console.log('  /smooth:product "你的想法"    — 定义要构建什么');

@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 
 /**
@@ -6,7 +6,7 @@ import { join } from 'path';
  *
  * Each node has:
  *   id         — artifact identifier
- *   file       — filename inside smooth/<name>/
+ *   file       — filename inside smooth/changes/<name>/
  *   required   — must exist before apply
  *   deps       — which artifacts must be "done" before this one is "ready"
  *   command    — the slash command that produces this artifact
@@ -16,12 +16,12 @@ const DEFAULT_SCHEMA = {
   artifacts: [
     { id: 'research',  file: 'research.md',  required: false, optional: true, deps: [],          command: '/smooth:research' },
     { id: 'product',   file: 'product.md',   required: true,  deps: [],          command: '/smooth:product' },
-    { id: 'workpad',   file: 'workpad.md',   required: false, deps: ['product'], command: '/smooth:product' },
-    { id: 'technical', file: 'technical.md', required: false, deps: ['product'], command: '/smooth:technical' },
+    { id: 'workpad',   file: 'workpad.md',   required: false, optional: true, deps: ['product'], command: '/smooth:product' },
+    { id: 'technical', file: 'technical.md', required: false, optional: true, deps: ['product'], command: '/smooth:technical' },
     { id: 'tasks',     file: 'tasks.md',     required: true,  deps: ['product'], command: '/smooth:tasks' },
     { id: 'verify',    file: 'verify.md',    required: false, deps: ['tasks'],   command: '/smooth:verify' },
-    { id: 'pitfalls',  file: 'pitfalls.md',  required: false, deps: ['verify'],  command: '/smooth:verify' },
-    { id: 'lessons',   file: 'lessons.md',   required: false, deps: ['pitfalls'], command: '/smooth:archive' },
+    { id: 'pitfalls',  file: 'pitfalls.md',  required: false, optional: true, deps: ['verify'],  command: '/smooth:verify' },
+    { id: 'lessons',   file: 'lessons.md',   required: false, optional: true, deps: ['pitfalls'], command: '/smooth:archive' },
   ],
   applyRequires: ['product', 'tasks'],
 };
@@ -57,7 +57,7 @@ export function resolveGraph(changeDir, schema = DEFAULT_SCHEMA) {
 }
 
 /**
- * Get the next artifact to work on (first "ready" node).
+ * Get the next artifact to work on, preferring non-optional ready nodes.
  */
 export function getNext(changeDir, schema = DEFAULT_SCHEMA) {
   const graph = resolveGraph(changeDir, schema);
@@ -156,7 +156,6 @@ function chooseNextAction(graph, changeDir) {
     return { command: '/smooth:archive' };
   }
 
-  if (!done('technical')) return byId.get('technical');
   if (!done('tasks')) return byId.get('tasks');
   if (!done('verify')) return byId.get('verify');
 
